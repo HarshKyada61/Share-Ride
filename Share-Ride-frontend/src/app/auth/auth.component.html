@@ -1,0 +1,120 @@
+<div class="container mt-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-secondary text-white">
+          <h3>{{ isLoginMode ? "Login" : "Sign Up" }}</h3>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="onSubmit(form)" #form="ngForm" *ngIf="!isLoading">
+            <div class="mb-3" *ngIf="!isLoginMode">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                ngModel
+                required
+                name="Name"
+                required
+                #name="ngModel"
+              />
+              <span  class="alert" *ngIf="!name.valid && name.touched">*Enter Valid Name</span>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                ngModel
+                required
+                name="Email"
+                required
+                email
+                #email="ngModel"
+              />
+              <span  class="alert" *ngIf="!email.valid && email.touched">*Enter valid Email</span>
+            </div>
+            <div class="mb-3" *ngIf="!isLoginMode">
+              <label for="mobileNo" class="form-label">Mobile No.</label>
+              <input
+                type="number"
+                class="form-control"
+                id="mobileNo"
+                ngModel
+                required
+                name="MobileNo"
+                required
+                min="1000000000"
+                max="9999999999"
+                #mobile="ngModel"
+              />
+              <span  class="alert" *ngIf="!mobile.valid && mobile.touched">*Enter Vakid Mobile Number</span>
+            </div>
+            <div class="mb-3" *ngIf="!isLoginMode">
+              <label for="mobileNo" class="form-label">Gender</label><br />
+              <div>
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="Gender"
+                  id="Male"
+                  ngModel
+                  value="Male"
+                  required
+                />
+                Male
+              
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="Gender"
+                  id="Female"
+                  ngModel
+                  value="Female"
+                  required
+                />Female
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                required
+                ngModel
+                name="Password"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <div class="mb-3 text-center">
+              <button
+                class="btn btn-primary me-2"
+                type="submit"
+                [disabled]="!form.valid"
+              >
+                {{ isLoginMode ? "Login" : "Sign Up" }}
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                (click)="onSwitchMode()"
+                type="button"
+              >
+                Switch to {{ isLoginMode ? "Sign Up" : "Login" }}
+              </button>
+            </div>
+          </form>
+
+         
+          <div class="spinner-border text-primary" *ngIf="isLoading" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
