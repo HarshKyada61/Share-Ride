@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from './auth.service';
+
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -8,26 +10,27 @@ import { AuthService } from './auth.service';
   styleUrls: ['./auth.component.css'],
 })
 export class AuthComponent {
-  isLoginMode = true;
+  isLoginMode = false;
   isError= false;
 
   isLoading=false;
 
-  constructor(public auth: AuthService) {}
+  constructor(public userService: UserService, public router:Router) {}
 
-  onSwitchMode() {
-    this.isLoginMode = !this.isLoginMode;
-  }
+  checkValue(values: any){
+    this.isLoginMode = values.currentTarget.checked
+ }
+ 
 
   onSubmit(form: NgForm) {
     event?.preventDefault();
     this.isLoading = true
 
     if (!this.isLoginMode) {
-      this.auth.signup(form.value).subscribe(
+      this.userService.signup(form.value).subscribe(
         (res: any) => {
-          localStorage.setItem('token', res.token);
-          this.isLoading=false
+          this.onSuccess(res.token)
+          this.router.navigate(['/profile'])
         },
         (err) => {
           if(err.error){
@@ -40,10 +43,10 @@ export class AuthComponent {
         }
       );
     } else {
-      this.auth.login(form.value).subscribe(
+      this.userService.login(form.value).subscribe(
         (res: any) => {
-          localStorage.setItem('token',res.token);
-          this.isLoading=false
+          this.onSuccess(res.token);
+          this.router.navigate(['/profile'])
         },
         (err) => {
           if(err.error){
@@ -60,6 +63,7 @@ export class AuthComponent {
 
   onSuccess(token:string){
     localStorage.setItem('token','Bearer '+token);
-          this.isLoading=false
+    this.userService.isAuthenticated.next(true)
+    this.isLoading=false
   }
 }

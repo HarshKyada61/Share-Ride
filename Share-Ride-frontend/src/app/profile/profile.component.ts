@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileService } from './profile.service';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -14,12 +15,19 @@ export class ProfileComponent implements OnInit {
     'Gender': ' '
   }
 
-  constructor(public ProfileService: ProfileService){}
+  constructor(public userService: UserService, public router: Router){}
 
   ngOnInit(): void {
-    this.ProfileService.getUser().subscribe((res:any) => {
-      console.log(res);
+    this.userService.getUser().subscribe((res:any) => {
+      // console.log(res);
       this.user = res
+    })
+  }
+
+  onDelete(){
+    this.userService.deleteUser().subscribe(() => {
+      localStorage.removeItem('token')
+      this.router.navigate(['/auth'])
     })
   }
 }

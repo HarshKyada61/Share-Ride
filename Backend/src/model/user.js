@@ -5,13 +5,13 @@ import validator from 'validator';
 const userSchema = new mongoose.Schema({
     Name: {
         type: String,
-        required: true,
+        required: [true,'Name is Required'],
         trim: true
     },
     Email:{
         type: String,
         unique: true,
-        required: true,
+        required: [true,'Email is required'],
         trim: true,
         lowercase: true,    
         validate(value) {
@@ -23,18 +23,23 @@ const userSchema = new mongoose.Schema({
     MobileNo:{
         type: Number,
         unique:true,
-        required:true,
+        required:[true,"Mobile No. is Required"],
         trim:true,
+        min:1000000000,
+        max:9999999999
     },
     Password: {
         type: String,
-        required: true,
+        required: [true, "Password is Required"],
         minlength: 6,
         trim: true,
     },
     Gender: {
         type: String,
-        required:true,
+        enum:{
+            values:["Male", "Female"],
+            message: "{VALUE} is not supported"
+        }
     },
     tokens: [{
         token: {
@@ -42,6 +47,10 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
+    isDeleted:{
+        type: Boolean,
+        default: false,
+    }
 },{
     timestamps: true
 })
@@ -52,7 +61,7 @@ userSchema.methods.toJSON = function () {
 
     delete userObject.Password
     delete userObject.tokens
-    
+    delete userObject.isDeleted
     delete userObject.__v
 
     return userObject
@@ -72,7 +81,7 @@ userSchema.methods.generateToken = async function() {
 
 //match user
 userSchema.statics.findByCredentials = async (email, password) => {
-    const user = await User.findOne({Email: email})
+    const user = await User.findOne({Email: email, isDeleted: false})
 
     if(!user){
         throw new Error("Wrong Email")

@@ -4,10 +4,17 @@ import auth from '../middleware/auth.js'
 
 const router = new express.Router()
 
-//user Signup
+//user Signup (create user)
 router.post('/Share-Ride/Signup', async (req, res) => {
-    const user = new User(req.body)
-
+    let user = await User.findOne({$or:[{Email: req.body.Email, isDeleted: true},{MobileNo: req.body.MobileNo, isDeleted: true}]})
+    if(!user){
+        user = new User(req.body)
+    }
+    else{
+        const updates = Object.keys(req.body)
+        updates.forEach((update) => user[update] = req.body[update]);
+        user.isDeleted = false;
+    }
     try{
         await user.save();
         const token = await user.generateToken()
@@ -17,6 +24,9 @@ router.post('/Share-Ride/Signup', async (req, res) => {
         console.log(e.message);
         res.status(400).send(e.message)
     }
+
+
+   
 })
 
 //user Login
@@ -43,5 +53,19 @@ router.get('/Share-Ride/Profile',auth, async(req, res) => {
     }
 })
 
+
+//delete user
+router.delete('/Share-Ride/DeleteUser', auth, async(req, res) => {
+    
+    try{
+        req.user['isDeleted'] = true;
+        req.user['tokens'] = [];
+        await req.user.save()   
+        res.status(200).send()
+
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
 
 export default router
