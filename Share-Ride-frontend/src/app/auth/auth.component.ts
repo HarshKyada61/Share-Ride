@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class AuthComponent {
   isLoginMode = false;
   isError= false;
-
+  error=false;
   isLoading=false;
 
   constructor(public userService: UserService, public router:Router) {}
@@ -33,8 +33,11 @@ export class AuthComponent {
           this.router.navigate(['/profile'])
         },
         (err) => {
-          if(err.error){
-            alert(err.error);
+          if(err.status === 400){
+            this.error = true
+            alert(err.error)  
+            // console.log(err);
+            // ;
           }
           else{
             alert("An Error Ocuured")
@@ -49,8 +52,10 @@ export class AuthComponent {
           this.router.navigate(['/profile'])
         },
         (err) => {
-          if(err.error){
-            alert(err.error);
+          if(err.status === 400){
+            // alert(err.error);
+            console.log(err);
+            this.error = true;
           }
           else{
             alert("An Error Ocuured")
@@ -66,4 +71,6 @@ export class AuthComponent {
     this.userService.isAuthenticated.next(true)
     this.isLoading=false
   }
+
+
 }

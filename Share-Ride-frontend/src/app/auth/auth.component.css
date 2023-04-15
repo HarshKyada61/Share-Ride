@@ -21,7 +21,7 @@ input.ng-invalid.ng-touched {
 }
 .main{
 	width: 350px;
-	height: 600px;
+	height: 630px;
 	overflow: hidden;
     background: linear-gradient(to bottom,  #62CDFF, #62CDFF);
 	border-radius: 10px;
@@ -56,8 +56,6 @@ input{
 	width: 60%;
 	height: 30px;
 	background: #e0dede;
-	
-	
 	padding: 10px;
 	border: none;
 	outline: none;

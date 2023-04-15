@@ -18,12 +18,12 @@
           <span class="alert" *ngIf="!mobile.valid && mobile.touched">*Enter Valid Mobile Number</span>
         </div>
         <div class="input-control">
-          <input type="password" class="form-control" id="password" placeholder="Password" required ngModel name="Password" required minlength="6" #password="ngModel"/>
-          <span class="alert" *ngIf="!password.valid && password.touched">*Enter valid Email</span>
+          <input type="password" class="form-control" id="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required ngModel name="Password" required minlength="6" #password="ngModel"/>
+          <span class="alert" *ngIf="!password.valid && password.touched">*Password Must contain Minimum 6 characters, One UpeerCase Letter, One LowerCase Letter, One number,and One special Character. </span>
         </div>
         <button>Sign up</button>
       </form>
-      <div class="d-flex justify-content-center my-auto">
+      <!-- <div class="d-flex justify-content-center my-auto">
         <div
           class="spinner-border text-primary"
           *ngIf="isLoading"
@@ -31,7 +31,7 @@
         >
           <span class="visually-hidden">Loading...</span>
         </div>
-      </div>
+      </div> -->
     </div>
   
     <div class="login">
@@ -46,6 +46,11 @@
           <span class="alert" *ngIf="!loginPassword.valid && loginPassword.touched">*Enter valid Email</span></div>
         <button>Login</button>
       </form>
+
+      <div class="input-control" *ngIf="error">
+        <span class="alert">*Invalid Email or Password!!</span>
+      </div>
+
       <div class="d-flex justify-content-center my-auto">
         <div
           class="spinner-border text-primary"

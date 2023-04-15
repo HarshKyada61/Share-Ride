@@ -21,7 +21,7 @@ router.post('/Share-Ride/Signup', async (req, res) => {
         res.status(201).send({token,user});
     }
     catch(e){
-        console.log(e.message);
+        // console.log(e.message);
         res.status(400).send(e.message)
     }
 

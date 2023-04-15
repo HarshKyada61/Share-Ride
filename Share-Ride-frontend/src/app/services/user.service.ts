@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +25,9 @@ export class UserService {
   //Login API call
   login(user:any){
     return this.http.post(this.URL+'/Login', user)
+                    // .pipe(
+                    //   catchError()
+                    // )
   }
 
   //get User Details

@@ -33,6 +33,12 @@ const userSchema = new mongoose.Schema({
         required: [true, "Password is Required"],
         minlength: 6,
         trim: true,
+        validate: {
+            validator: function(v) {
+              return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
+            },
+            message: "Password must contain minimum One UpperCase Character, One LowerCase Character, One special character and One number.!"
+          },
     },
     Gender: {
         type: String,

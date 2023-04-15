@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from './services/user.service';
+import { Event, NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -8,12 +9,26 @@ import { UserService } from './services/user.service';
 })
 export class AppComponent implements OnInit{
   title = 'Share-Ride-frontend';
+  isAuthRoute=false;
 
-  constructor(public userservice: UserService){}
+  constructor(public userservice: UserService,private router: Router){}
 
   ngOnInit(): void {
     if(localStorage.getItem('token')){
       this.userservice.isAuthenticated.next(true);
     }
+
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+          if(event.url === '/auth'){
+            this.isAuthRoute = true;
+          }
+          else{
+            this.isAuthRoute = false
+          }
+      }
+  });
+      
+   
   }
 }
