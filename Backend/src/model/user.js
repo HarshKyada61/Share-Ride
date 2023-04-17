@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
+import bcrypt from 'bcryptjs'
 
 const userSchema = new mongoose.Schema({
     Name: {
@@ -33,12 +34,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Password is Required"],
         minlength: 6,
         trim: true,
-        validate: {
-            validator: function(v) {
-              return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
-            },
-            message: "Password must contain minimum One UpperCase Character, One LowerCase Character, One special character and One number.!"
-          },
+      
     },
     Gender: {
         type: String,
@@ -93,13 +89,29 @@ userSchema.statics.findByCredentials = async (email, password) => {
         throw new Error("Wrong Email")
     }
 
-    if(!(password === user.Password)){
+    const isMatch = await bcrypt.compare(password, user.Password)
+
+    if(!isMatch){
         throw new Error('Wrong Password')
     }
     
     return user
 
 }
+
+userSchema.pre('save', async function (next) {
+    const user = this
+    
+
+    if (user.isModified('Password')) {
+        if(!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(user.Password))){
+            throw Error( "Password must contain minimum One UpperCase Character, One LowerCase Character, One special character and One number.!")
+        }
+        user.Password = await bcrypt.hash(user.Password, 8)
+    }
+
+    next()
+})
 
 const User = mongoose.model('User', userSchema)
 

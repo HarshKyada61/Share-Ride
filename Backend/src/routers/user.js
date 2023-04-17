@@ -42,6 +42,20 @@ router.post('/Share-Ride/Login', async (req, res) => {
     }
 })
 
+//user Logout
+router.post('/Share-Ride/Logout', auth, async (req, res) => {
+    try{
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+
+        res.status(200).send()
+    }catch(e){
+        res.status(500).send()
+    }
+})
+
 //get User Details
 router.get('/Share-Ride/Profile',auth, async(req, res) => {
     const user = req.user;

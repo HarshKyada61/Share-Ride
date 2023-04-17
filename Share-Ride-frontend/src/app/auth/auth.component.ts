@@ -36,8 +36,6 @@ export class AuthComponent {
           if(err.status === 400){
             this.error = true
             alert(err.error)  
-            // console.log(err);
-            // ;
           }
           else{
             alert("An Error Ocuured")
@@ -53,8 +51,6 @@ export class AuthComponent {
         },
         (err) => {
           if(err.status === 400){
-            // alert(err.error);
-            console.log(err);
             this.error = true;
           }
           else{

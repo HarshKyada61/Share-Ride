@@ -30,6 +30,12 @@ export class UserService {
                     // )
   }
 
+  //Logout API call
+  logout(){
+    const options = this.setHeaders(localStorage.getItem('token')) 
+    return this.http.post(this.URL+'/Logout',{},options)
+  }
+
   //get User Details
   getUser(){
     const options = this.setHeaders(localStorage.getItem('token')) 
