@@ -30,7 +30,6 @@ export class AuthComponent {
       this.userService.signup(form.value).subscribe(
         (res: any) => {
           this.onSuccess(res.token)
-          this.router.navigate(['/profile'])
         },
         (err) => {
           if(err.status === 400){
@@ -47,7 +46,7 @@ export class AuthComponent {
       this.userService.login(form.value).subscribe(
         (res: any) => {
           this.onSuccess(res.token);
-          this.router.navigate(['/profile'])
+         
         },
         (err) => {
           if(err.status === 400){
@@ -66,6 +65,7 @@ export class AuthComponent {
     localStorage.setItem('token','Bearer '+token);
     this.userService.isAuthenticated.next(true)
     this.isLoading=false
+    this.router.navigate(['/profile'])
   }
 
 

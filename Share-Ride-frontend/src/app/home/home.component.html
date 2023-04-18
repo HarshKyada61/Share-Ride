@@ -1,8 +1,11 @@
-<form style="background-color: grey; padding: 10px;">
-    <input style="width: 40%; margin: 0 20px;" placeholder="Enter Source Location" type="text"> ->
-    <input style="width: 40%; margin: 0 20px;" placeholder="Enter Destination Location" type="text">
+<form style="background: transparent; padding: 10px;">
+    <input style="width: 40%; margin: 0 20px;" placeholder="Enter Source Location" type="text" ngModel name='source' #source="ngModel" (input)="input($event)"> ->
+    <input style="width: 40%; margin: 0 20px;" placeholder="Enter Destination Location" type="text" ngModel name='destination' #destination="ngModel">
     <button>Search</button>
 </form>
-<div id='map'>
-   
+<div class="gps">
+    <button style="border-radius: 50%;" (click)="getCurrentLocation()"><i class="fa-solid fa-location-arrow"></i></button>
 </div>
+<div id='map'>
+</div>
+
