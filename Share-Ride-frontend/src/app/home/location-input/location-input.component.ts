@@ -11,6 +11,8 @@ import { MapsService } from 'src/app/services/maps.service';
 export class LocationInputComponent implements OnInit{
 
   @Output() SetLocationEvent = new EventEmitter<object>()
+  @Output() SetCurLocationEvent = new EventEmitter()
+  @Output() chosefromMap = new EventEmitter()
 
   locationSubject= new Subject<string |undefined>()
   locationSubscription?:Subscription
@@ -33,13 +35,14 @@ export class LocationInputComponent implements OnInit{
     });
   }
 
+  //Search for match of inserted address
   searchSrcLocation(address:any){
     this.MapService.searchPlace(address).subscribe(results => { 
       this.suggestedSrc=results
-
     })
   }
 
+  //listne to input
   input(event:Event){
     const srcLoc = (event.target as HTMLInputElement).value;
     this.locationSubject.next(srcLoc?.trim());
@@ -49,10 +52,18 @@ export class LocationInputComponent implements OnInit{
     this.locationSubscription?.unsubscribe
   }
 
+  //emit event to set chosen location
   setLocation(index:number){
     this.location = this.suggestedSrc[index].place_name,
     this.SetLocationEvent.emit(this.suggestedSrc[index]);
   }
 
+  //emit event to set current location
+  setCurLocation(){
+    this.SetCurLocationEvent.emit();
+  }
 
+  onChosefromMap(){
+    this.chosefromMap.emit();
+  }
 }

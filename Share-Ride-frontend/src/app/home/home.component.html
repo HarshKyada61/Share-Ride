@@ -1,9 +1,9 @@
 <form style="background: transparent; padding: 10px;">
     
-    <app-location-input id="Source" (SetLocationEvent)="setSrc($event)"></app-location-input>
-    ->
-    <app-location-input id="Destination" (SetLocationEvent)="setDest($event)"></app-location-input>
-    <button>Search</button>
+    <app-location-input id="Source" (SetLocationEvent)="setSrc($event)" (SetCurLocationEvent)="setAsCurLocation()" (chosefromMap)="srcOnMap()"></app-location-input>
+    <i class="fa-sharp fa-solid fa-arrow-right fa-lg"></i>
+    <app-location-input id="Destination" (SetLocationEvent)="setDest($event)" (chosefromMap)="destOnMap()"></app-location-input>
+    <button class="btn btn-primary">Search</button>
 </form>
 <div class="gps">
     <button style="border-radius: 50%;" (click)="getCurrentLocation()"><i class="fa-solid fa-location-arrow"></i></button>

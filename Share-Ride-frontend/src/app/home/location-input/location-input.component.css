@@ -1,6 +1,9 @@
 .dropdown-toggle{
     width: 40%;
     margin: 0 20px 0 20px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 25px;
 }
 
 .dropdown-menu{

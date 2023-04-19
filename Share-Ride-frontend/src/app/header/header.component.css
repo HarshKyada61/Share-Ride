@@ -1,6 +1,33 @@
 .btn{
     background-color: #0dcaf0;
 }
+
 .navbar{
     background-color: #8de5fd;
+}
+
+a.btn{
+    background: none;
+}
+
+ul{
+    padding: 0;
+    list-style-type: none;
+}
+
+.offcanvas{
+    width:300px
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+li{
+    padding: 5px;
+    margin: 5px 0 5px 0;
+}
+li:hover{
+    background-color: aliceblue;
 }

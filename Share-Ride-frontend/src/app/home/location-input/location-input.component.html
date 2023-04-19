@@ -1,5 +1,6 @@
 <input id='Location' class="dropdown-toggle" data-bs-toggle="dropdown" placeholder="Enter {{id}} Location" type="text" [(ngModel)]="location" (input)="input($event)">
 <ul class="dropdown-menu" aria-labelledby="Location">
-    <li *ngIf="id==='Source'"><a class="dropdown-item"><i class="fa-solid fa-location-arrow" role="button" ></i> Set As My current Location</a></li>
+    <li *ngIf="id==='Source'"><a class="dropdown-item" role="button" (click)="setCurLocation()"><i class="fa-solid fa-location-arrow" style="color:rgb(36, 183, 228)" ></i> Set As My current Location</a></li>
+    <li ><a class="dropdown-item" role="button" (click)="onChosefromMap()"><i class="fa-sharp fa-solid fa-location-dot" ></i> Choose on Map</a></li>
     <li *ngFor="let location of suggestedSrc,index as i"><a style="width: auto;" class="dropdown-item" role="button" (click)="setLocation(i)">{{location.place_name}}</a></li>
 </ul>

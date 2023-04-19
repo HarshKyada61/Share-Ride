@@ -22,8 +22,8 @@ export class HomeComponent implements OnInit{
 
   curLocation?:LngLatLike
   curMarker=new mapboxgl.Marker()
-  sourceMarker=new mapboxgl.Marker({ color: 'red', draggable: true})
-  destMarker=new mapboxgl.Marker({ color: 'true', draggable: true})
+  sourceMarker=new mapboxgl.Marker({ color: 'red'})
+  destMarker=new mapboxgl.Marker({ color: 'true'})
   srcLocation=''
   destLocation = ''
   
@@ -65,9 +65,43 @@ export class HomeComponent implements OnInit{
     this.putMarker(srcCords, this.sourceMarker)    
   }
 
+  setAsCurLocation(){
+    const srcCords:any= this.curLocation
+    // this.curMarker.remove()
+    this.putMarker(srcCords, this.sourceMarker)    
+  }
+
   setDest(event:any){
     this.destLocation = event
     const destCords= event.geometry.coordinates
     this.putMarker(destCords, this.destMarker)    
+  }
+
+  // addonclick(marker:mapboxgl.Marker){
+  //   this.map.on('click', (e:any) => {
+  //     marker.setLngLat(e.lngLat).addTo(this.map);
+  //   })
+  // }
+
+ 
+  setsrcMarker =(e:any) => {
+    this.sourceMarker.setLngLat(e.lngLat).addTo(this.map);
+    this.MapService.searchPlaceWithLatLon(e.lngLat).subscribe(res => {
+      console.log(res);
+    })
+  }
+
+  setdestMarker =(e:any) => {
+    this.destMarker.setLngLat(e.lngLat).addTo(this.map);
+  }
+
+  srcOnMap(){
+    this.map.off('click',this.setdestMarker)
+    this.map.on('click',this.setsrcMarker)
+  }
+
+  destOnMap(){
+    this.map.off('click',this.setsrcMarker)
+    this.map.on('click',this.setdestMarker)
   }
 }

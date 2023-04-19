@@ -7,6 +7,7 @@ import { BehaviorSubject, catchError } from 'rxjs';
 })
 export class UserService {
   isAuthenticated=new  BehaviorSubject<boolean>(false);
+    
 
   URL = "http://localhost:3000/Share-Ride";
   setHeaders(token:any){
