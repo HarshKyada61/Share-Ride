@@ -9,6 +9,7 @@ import {  HttpClientModule } from '@angular/common/http';
 import { ProfileComponent } from './profile/profile.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
+import { LocationInputComponent } from './home/location-input/location-input.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { HomeComponent } from './home/home.component';
     AuthComponent,
     ProfileComponent,
     HeaderComponent,
-    HomeComponent
+    HomeComponent,
+    LocationInputComponent
   ],
   imports: [
     BrowserModule,

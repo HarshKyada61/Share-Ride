@@ -1,0 +1,13 @@
+.dropdown-toggle{
+    width: 40%;
+    margin: 0 20px 0 20px;
+}
+
+.dropdown-menu{
+    width: 39%;
+}
+
+.dropdown-item{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

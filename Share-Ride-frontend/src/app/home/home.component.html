@@ -1,6 +1,8 @@
 <form style="background: transparent; padding: 10px;">
-    <input style="width: 40%; margin: 0 20px;" placeholder="Enter Source Location" type="text" ngModel name='source' #source="ngModel" (input)="input($event)"> ->
-    <input style="width: 40%; margin: 0 20px;" placeholder="Enter Destination Location" type="text" ngModel name='destination' #destination="ngModel">
+    
+    <app-location-input id="Source" (SetLocationEvent)="setSrc($event)"></app-location-input>
+    ->
+    <app-location-input id="Destination" (SetLocationEvent)="setDest($event)"></app-location-input>
     <button>Search</button>
 </form>
 <div class="gps">
