@@ -24,8 +24,16 @@ export class HomeComponent implements OnInit{
   curMarker=new mapboxgl.Marker()
   sourceMarker=new mapboxgl.Marker({ color: 'red'})
   destMarker=new mapboxgl.Marker({ color: 'true'})
-  srcLocation=''
-  destLocation = ''
+
+  srcLocation:{
+    cords: LngLatLike;
+    place_name: string;
+  } | undefined
+
+  destLocation : {
+    cords: LngLatLike;
+    place_name: string;
+  } | undefined
   
   ngOnInit(){
     this.map = new mapboxgl.Map({
@@ -59,40 +67,57 @@ export class HomeComponent implements OnInit{
     marker.setLngLat(location).addTo(this.map);
   }
 
+  //input form user
   setSrc(event:any){
-    this.srcLocation = event
-    const srcCords= event.geometry.coordinates
-    this.putMarker(srcCords, this.sourceMarker)    
+    this.srcLocation = {
+      cords : event.geometry.coordinates ,
+      place_name :event.place_name
+    }
+    this.putMarker(this.srcLocation.cords, this.sourceMarker)    
   }
 
   setAsCurLocation(){
     const srcCords:any= this.curLocation
-    // this.curMarker.remove()
-    this.putMarker(srcCords, this.sourceMarker)    
+    this.putMarker(srcCords, this.sourceMarker) 
+    this.MapService.searchPlaceWithLatLon(srcCords[0],srcCords[1]).subscribe((res:string) => {
+      this.srcLocation = {
+        cords : srcCords,
+        place_name :res
+      }
+    })
+
+    
   }
 
   setDest(event:any){
-    this.destLocation = event
-    const destCords= event.geometry.coordinates
-    this.putMarker(destCords, this.destMarker)    
+    this.destLocation = {
+      cords : event.geometry.coordinates ,
+      place_name :event.place_name
+    }
+    this.putMarker(this.destLocation.cords, this.destMarker)    
   }
-
-  // addonclick(marker:mapboxgl.Marker){
-  //   this.map.on('click', (e:any) => {
-  //     marker.setLngLat(e.lngLat).addTo(this.map);
-  //   })
-  // }
-
+  //
  
+  //add on map
   setsrcMarker =(e:any) => {
     this.sourceMarker.setLngLat(e.lngLat).addTo(this.map);
-    this.MapService.searchPlaceWithLatLon(e.lngLat).subscribe(res => {
-      console.log(res);
+    this.MapService.searchPlaceWithLatLon(e.lngLat.lng, e.lngLat.lat).subscribe((res:string) => {
+      this.srcLocation = {
+        cords : [e.lngLat.lng, e.lngLat.lat],
+        place_name :res
+      }
+     
     })
   }
 
   setdestMarker =(e:any) => {
     this.destMarker.setLngLat(e.lngLat).addTo(this.map);
+    this.MapService.searchPlaceWithLatLon(e.lngLat.lng, e.lngLat.lat).subscribe((res:string) => {
+      this.destLocation = {
+        cords : [e.lngLat.lng, e.lngLat.lat],
+        place_name :res
+      }
+    })
   }
 
   srcOnMap(){
@@ -104,4 +129,5 @@ export class HomeComponent implements OnInit{
     this.map.off('click',this.setsrcMarker)
     this.map.on('click',this.setdestMarker)
   }
+  //
 }

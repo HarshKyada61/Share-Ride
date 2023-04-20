@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Subject } from 'rxjs';
 import { MapsService } from 'src/app/services/maps.service';
@@ -13,12 +13,13 @@ export class LocationInputComponent implements OnInit{
   @Output() SetLocationEvent = new EventEmitter<object>()
   @Output() SetCurLocationEvent = new EventEmitter()
   @Output() chosefromMap = new EventEmitter()
+  @Input() inputText:string|undefined 
 
   locationSubject= new Subject<string |undefined>()
   locationSubscription?:Subscription
   suggestedSrc:any=[]
   id:string;
-  location='';
+
 
   constructor(public MapService: MapsService,private elementRef: ElementRef){
     this.id = this.elementRef.nativeElement.getAttribute('id');
@@ -54,7 +55,6 @@ export class LocationInputComponent implements OnInit{
 
   //emit event to set chosen location
   setLocation(index:number){
-    this.location = this.suggestedSrc[index].place_name,
     this.SetLocationEvent.emit(this.suggestedSrc[index]);
   }
 
