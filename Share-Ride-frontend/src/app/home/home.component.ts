@@ -14,6 +14,8 @@ import { MapsService } from '../services/maps.service';
 export class HomeComponent implements OnInit{
 
   map:any;
+  el = document.createElement('div');
+
  
   constructor(public MapService: MapsService){
     (mapboxgl as typeof mapboxgl).accessToken =
@@ -21,8 +23,8 @@ export class HomeComponent implements OnInit{
   }
 
   curLocation?:LngLatLike
-  curMarker=new mapboxgl.Marker()
-  sourceMarker=new mapboxgl.Marker({ color: 'red'})
+  curMarker=new mapboxgl.Marker( {element:this.el})
+  sourceMarker=new mapboxgl.Marker({ color: 'red',})
   destMarker=new mapboxgl.Marker({ color: 'true'})
 
   srcLocation:{
@@ -43,6 +45,7 @@ export class HomeComponent implements OnInit{
       zoom: 14, // starting zoom
       projection: { name: 'mercator' },
     }) 
+    this.el.innerHTML = '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:#09baf0;"></i>';
     this.getCurrentLocation();
 
   }

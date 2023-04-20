@@ -4,7 +4,6 @@
       <h3>Share-Ride</h3>
     </a>
     <div class="d-flex">
-      <button class="btn me-2" (click)="logout()">Logout</button>
       <a class="btn" role="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
         <i class="fa-solid fa-bars fa-xl"></i>
       </a>
@@ -28,6 +27,16 @@
             </a>
           </li>
         </ul>
+      </div>
+      <div class="offcanvas-footer">
+        <ul>
+          <li>
+            <a type="button" (click)="logout()" class="row">
+              <div class="col-1"><i class="fa-solid fa-power-off fa-lg"></i></div>
+              <div class="col-11"><h5>Logout</h5></div>
+            </a>
+        </li>
+    </ul>
       </div>
     </div>
   </div>

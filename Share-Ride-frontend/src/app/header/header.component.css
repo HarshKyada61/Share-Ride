@@ -1,5 +1,6 @@
 .btn{
     background-color: #0dcaf0;
+
 }
 
 .navbar{
@@ -16,7 +17,8 @@ ul{
 }
 
 .offcanvas{
-    width:300px
+    width:300px;
+    border: none;
 }
 
 a{
