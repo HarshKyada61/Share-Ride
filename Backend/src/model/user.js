@@ -39,9 +39,17 @@ const userSchema = new mongoose.Schema({
     Gender: {
         type: String,
         enum:{
-            values:["Male", "Female"],
+            values:["Male", "Female", "Other"],
             message: "{VALUE} is not supported"
         }
+    },
+    DOB:{
+
+    },
+    LicenceNo:{
+        type:String,
+        minlength:16,
+        maxlength:16,
     },
     tokens: [{
         token: {

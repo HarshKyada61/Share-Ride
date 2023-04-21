@@ -26,9 +26,6 @@ export class UserService {
   //Login API call
   login(user:any){
     return this.http.post(this.URL+'/Login', user)
-                    // .pipe(
-                    //   catchError()
-                    // )
   }
 
   //Logout API call
@@ -41,6 +38,12 @@ export class UserService {
   getUser(){
     const options = this.setHeaders(localStorage.getItem('token')) 
     return this.http.get(this.URL+"/Profile", options)
+  }
+
+  //update User Details
+  updateUser(updates:any){
+    const options = this.setHeaders(localStorage.getItem('token')) 
+    return this.http.patch(this.URL+"/Profile/Update",updates, options)
   }
 
   //delete User

@@ -24,10 +24,22 @@ router.post('/Share-Ride/Signup', async (req, res) => {
         // console.log(e.message);
         res.status(400).send(e.message)
     }
-
-
    
 })
+
+//Update user Profile
+router.patch('/Share-Ride/Profile/Update', auth, async (req, res) => {
+    const updates = Object.keys(req.body)
+    try{
+        updates.forEach((update) => req.user[update] = req.body[update]);
+        await req.user.save()
+        res.status(200).send(req.user)
+        
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
+
 
 //user Login
 router.post('/Share-Ride/Login', async (req, res) => {
