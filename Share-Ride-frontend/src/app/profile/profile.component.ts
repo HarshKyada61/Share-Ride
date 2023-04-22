@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../services/user.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -16,8 +16,10 @@ export class ProfileComponent implements OnInit {
     'Gender': '',
     'DOB':'',
   }
+  isNew= false;
+  @ViewChild('updateModel') updateModel: HTMLElement | undefined
 
-  constructor(public userService: UserService, public router: Router){}
+  constructor(public userService: UserService, private router: Router){}
 
   ngOnInit(): void {
     this.userService.getUser().subscribe((res:any) => {
@@ -27,6 +29,12 @@ export class ProfileComponent implements OnInit {
       res.DOB?this.user.DOB=res.DOB:this.user.DOB='',
       res.Gender?this.user.Gender=res.Gender:this.user.Gender=''
     })
+
+    if(this.router.url.includes('new')){
+      let elemet: HTMLElement = document.getElementById('openModel') as HTMLElement;
+      elemet.click();
+    }
+    
   }
 
   onUpdate(Name:HTMLInputElement,Email:HTMLInputElement,Gender:HTMLInputElement,DOB:HTMLInputElement){
@@ -37,7 +45,11 @@ export class ProfileComponent implements OnInit {
     if(this.user.DOB !== DOB.value) {updatedUser['DOB'] = DOB.value} 
 
     this.userService.updateUser(updatedUser).subscribe(() => {
-      this.ngOnInit()
+      if(this.router.url.includes('new')){
+        this.router.navigate(['/profile'])
+        return
+      }
+      this.ngOnInit();
     })
   }
 

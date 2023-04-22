@@ -18,7 +18,7 @@ router.post('/Share-Ride/Signup', async (req, res) => {
     try{
         await user.save();
         const token = await user.generateToken()
-        res.status(201).send({token,user});
+        res.status(201).send({token});
     }
     catch(e){
         // console.log(e.message);

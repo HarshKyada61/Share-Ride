@@ -1,0 +1,5 @@
+<h2>{{user.Name}}'s Vehicles</h2>
+<p>Licence No.: {{user.LicenceNo?user.LicenceNo:'Not Available'}}</p>
+<div *ngIf="!user.LicenceNo">
+<button class="btn btn-primary" >Add Licence</button>
+</div>

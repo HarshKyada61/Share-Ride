@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
         }
     },
     DOB:{
-
+        type: String,
     },
     LicenceNo:{
         type:String,
@@ -110,7 +110,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
 userSchema.pre('save', async function (next) {
     const user = this
     
-
     if (user.isModified('Password')) {
         if(!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(user.Password))){
             throw Error( "Password must contain minimum One UpperCase Character, One LowerCase Character, One special character and One number.!")

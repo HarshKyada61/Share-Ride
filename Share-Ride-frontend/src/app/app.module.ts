@@ -10,6 +10,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { LocationInputComponent } from './home/location-input/location-input.component';
+import { VehiclesComponent } from './vehicles/vehicles.component';
+
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import { LocationInputComponent } from './home/location-input/location-input.com
     ProfileComponent,
     HeaderComponent,
     HomeComponent,
-    LocationInputComponent
+    LocationInputComponent,
+    VehiclesComponent,
   ],
   imports: [
     BrowserModule,

@@ -22,12 +22,12 @@
 
     <div class="d-flex mt-2">
       <button class="btn1 m-2" (click)="onDelete()">Delete Profile</button>
-      <button class="btn1 m-2" data-bs-toggle="modal" data-bs-target="#updateModal">Update Profile</button>
+      <button class="btn1 m-2" data-bs-toggle="modal" id='openModel' data-bs-target="#updateModal">Update Profile</button>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-modal="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content ">
       <div class="modal-header">
@@ -61,7 +61,7 @@
         </div>
         <div class="mb-3">
           <label for="DOB" class="form-label">DOB</label>
-          <input type="date" class="form-control" id="DOB" name="DOB" required #DOB>
+          <input type="date" class="form-control" id="DOB" name="DOB" [value]="user.DOB" required #DOB>
         </div>
       
         </form>
