@@ -3,6 +3,10 @@
     padding: 0
 } */
 
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
 .body {
     margin: 0;
 	padding: 0;

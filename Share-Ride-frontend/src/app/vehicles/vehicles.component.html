@@ -1,5 +1,65 @@
-<h2>{{user.Name}}'s Vehicles</h2>
-<p>Licence No.: {{user.LicenceNo?user.LicenceNo:'Not Available'}}</p>
-<div *ngIf="!user.LicenceNo">
-<button class="btn btn-primary" >Add Licence</button>
+<div class="card m-2">
+    <div class="card-header">
+        <h2>{{user.Name}}'s Vehicles</h2>
+        <p>Licence Nunmber:
+            <span *ngIf="!isAddLicence"> {{user.LicenceNo?user.LicenceNo:'Not Available'}} </span>
+            <span *ngIf="isAddLicence">
+                <input placeholder="Eg. ABXX20XXXXXXXXX" type="text" name="licence" required pattern="^[A-Z]{2}\d{2}(19|20)\d{9}$" minlength="15" maxlength="15" ngModel #LicenceNo="ngModel">
+                    <button [disabled]="!LicenceNo.valid" class="btn btn-primary ms-2" (click)="onSaveLicence(LicenceNo)">Save</button>
+                    <button class="btn btn-danger m-2"  (click)="LicenceToggle()">Cancle</button>
+            </span>
+        </p>
+        <div *ngIf="!user.LicenceNo" >
+            <button class="btn btn-primary" (click)="LicenceToggle()" *ngIf="!isAddLicence">Add Licence</button>
+        </div>
+    </div>
+   
+    
+    <div *ngIf="user.LicenceNo" class="card-body">
+        <div *ngIf="vehicels.length === 0">You hvaen't Added Any Vehicles</div>
+        <div *ngFor="let vehicle of vehicels" class="card m-2 p-2">
+            <p>Vehicle Number: {{vehicle.VehicleNo}}</p>
+            <p>ModelName: {{vehicle.ModelName}}</p>
+            <p>Type: {{vehicle.Type}}</p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicle">Add Vehicle</button>
+    </div>
+    
+    <div class="modal fade" id="addVehicle" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Add Vehicle</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form #form="ngForm">
+                <div class="mb-3">
+                    <label for="VehicleNo" class="form-label">Vehicle Number*</label>
+                    <input type="text" class="form-control" id="vehicleNo" name="VehicleNo"  ngModel required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Type*:</label>
+    
+                      <input class="form-check-input ms-2" type="radio" name="Type" id="2-Wheeler" value="2-Wheeler" required ngModel>
+                      <label class="form-check-label ms-1" for="2-Wheeler">2-Wheeler</label>
+    
+                      <input class="form-check-input ms-2" type="radio" name="Type" id="4-Wheeler" value="4-Wheeler" required ngModel>
+                      <label class="form-check-label ms-1" for="4-Wheeler">4-Wheeler</label>
+    
+                </div>
+                <div class="mb-3">
+                    <label for="ModelName" class="form-label">Model Name*</label>
+                    <input type="text" class="form-control" id="ModelName" name="ModelName" ngModel required>
+                </div>
+    
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" [disabled]="!form.valid" (click)="addVehicle(form)" data-bs-dismiss="modal">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>

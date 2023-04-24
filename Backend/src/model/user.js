@@ -48,8 +48,8 @@ const userSchema = new mongoose.Schema({
     },
     LicenceNo:{
         type:String,
-        minlength:16,
-        maxlength:16,
+        minlength:15,
+        maxlength:15,
     },
     tokens: [{
         token: {
@@ -115,6 +115,12 @@ userSchema.pre('save', async function (next) {
             throw Error( "Password must contain minimum One UpperCase Character, One LowerCase Character, One special character and One number.!")
         }
         user.Password = await bcrypt.hash(user.Password, 8)
+    }
+
+    if(user.isModified('LicenceNo')){
+        if(!(/^[A-Z]{2}\d{2}(19|20)\d{9}$/.test(user.LicenceNo))){
+            throw Error('Driving Licence Number is Invalid')
+        }
     }
 
     next()

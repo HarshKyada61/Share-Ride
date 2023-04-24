@@ -33,10 +33,10 @@ router.patch('/Share-Ride/Profile/Update', auth, async (req, res) => {
     try{
         updates.forEach((update) => req.user[update] = req.body[update]);
         await req.user.save()
-        res.status(200).send(req.user)
+        res.status(200).send()
         
     }catch(e){
-        res.status(400).send(e)
+        res.status(400).send(e.message)
     }
 })
 

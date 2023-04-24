@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm, NgModel } from '@angular/forms';
 
 
 @Component({
@@ -37,12 +38,13 @@ export class ProfileComponent implements OnInit {
     
   }
 
-  onUpdate(Name:HTMLInputElement,Email:HTMLInputElement,Gender:HTMLInputElement,DOB:HTMLInputElement){
+  onUpdate(Name:HTMLInputElement,Email:HTMLInputElement,Gender:NgModel,DOB:HTMLInputElement){
     const updatedUser:{[key:string]:any}={}
     if(this.user.Name !== Name.value) { updatedUser['Name'] = Name.value}
     if(this.user.Email !== Email.value) {updatedUser['Email'] = Email.value}
     if(this.user.Gender !== Gender.value) {updatedUser['Gender'] = Gender.value}
     if(this.user.DOB !== DOB.value) {updatedUser['DOB'] = DOB.value} 
+    
 
     this.userService.updateUser(updatedUser).subscribe(() => {
       if(this.router.url.includes('new')){

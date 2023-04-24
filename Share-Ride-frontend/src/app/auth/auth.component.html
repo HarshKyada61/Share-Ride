@@ -18,10 +18,16 @@
           <span class="alert" *ngIf="!mobile.valid && mobile.touched">*Enter Valid Mobile Number</span>
         </div>
         <div class="input-control">
-          <input type="password" class="form-control" id="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required ngModel name="Password" required minlength="6" #password="ngModel"/>
+          <input class="col-11" type="password" class="form-control" id="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required ngModel name="Password" required minlength="6" #password="ngModel"/>
           <span class="alert" *ngIf="!password.valid && password.touched">*Password Must contain Minimum 6 characters, One UpeerCase Letter, One LowerCase Letter, One number,and One special Character. </span>
         </div>
-        <button>Sign up</button>
+        <div class="input-control">
+          <input class="col-11" type="text" class="form-control" id="confirmPassword" placeholder="Confirm Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required ngModel name="ConfirmPassword" required minlength="6" #confirmPassword="ngModel"/>
+          <span class="alert" *ngIf="password.value !== confirmPassword.value">*confirm password don't match password</span>
+          
+        </div>
+        
+        <button class="button" [disabled]="!signupform.valid">Sign up</button>
       </form>
     </div>
   
@@ -33,9 +39,10 @@
           <span class="alert" *ngIf="!loginEmail.valid && loginEmail.touched">*Enter valid Email</span>
         </div>
         <div class="input-control">
-          <input type="password" class="form-control" id="loginPassword" placeholder="Password" required ngModel name="Password" required minlength="6" #loginPassword="ngModel"/>
-          <span class="alert" *ngIf="!loginPassword.valid && loginPassword.touched">*Enter valid Email</span></div>
-        <button>Login</button>
+          <input type="password" class="form-control" id="loginPassword" placeholder="Password" required ngModel name="Password" required minlength="6" #loginPassword="ngModel" #password1/>
+          <span class="me-0"><i class="fa-solid fa-eye" role="button" (click)="showPassword(password1)"></i></span>
+          <span class="alert" *ngIf="!loginPassword.valid && loginPassword.touched">*Enter valid Password</span></div>
+        <button class="button" [disabled]="!loginform.valid">Login</button>
       </form>
 
       <div class="input-control" *ngIf="error">

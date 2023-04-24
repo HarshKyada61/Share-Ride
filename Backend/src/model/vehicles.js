@@ -6,14 +6,14 @@ const VehicleSchema = new mongoose.Schema({
         type:String,
         required: [true,'Vehicle Number is Required'],
     },
-    type: {
+    Type: {
         type:String,
         required:[true,'type is Required'],
         enum:{
             values:["2-Wheeler", "4-Wheeler"],
             message: "{VALUE} is not supported"
         }
-    },
+    },  
     ModelName:{
         type:String,
         required:[true,'ModelName is Required'],
@@ -31,11 +31,10 @@ VehicleSchema.methods.toJSON = function () {
     const vehicle = this
     const vehicleObject = vehicle.toObject()
 
-
     delete vehicleObject.createdAt
     delete vehicleObject.updatedAt
     delete vehicleObject.__v
-
+    delete vehicleObject.user
     return vehicleObject
 }
 

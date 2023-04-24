@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class AuthComponent {
   isLoginMode = false;
-  isError= false;
   error=false;
   isLoading=false;
 
@@ -27,14 +26,19 @@ export class AuthComponent {
     this.isLoading = true
 
     if (!this.isLoginMode) {
-      this.userService.signup(form.value).subscribe(
+      const user = {
+        "Name": form.value.Name,
+        "Email": form.value.Email,
+        "MobileNo": form.value.MobileNo,
+        "Password": form.value.Password,
+      }
+      this.userService.signup(user).subscribe(
         (res: any) => {
           this.onSuccess(res.token)
           this.router.navigate(['/profile/new'])
         },
         (err) => {
           if(err.status === 400){
-            this.error = true
             alert(err.error)  
           }
           else{
@@ -69,5 +73,13 @@ export class AuthComponent {
     
   }
 
+  showPassword(password:any){
+    if(password.type==='password'){
+      password.type = 'text'
+    }
+    else{
+      password.type='password'
+    }
+  }
 
 }
