@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-auth',
@@ -14,7 +15,7 @@ export class AuthComponent {
   error=false;
   isLoading=false;
 
-  constructor(public userService: UserService, public router:Router) {}
+  constructor(public userService: UserService, public router:Router, private toastr: ToastrService) {}
 
   checkValue(values: any){
     this.isLoginMode = values.currentTarget.checked
@@ -34,8 +35,10 @@ export class AuthComponent {
       }
       this.userService.signup(user).subscribe(
         (res: any) => {
-          this.onSuccess(res.token)
-          this.router.navigate(['/profile/new'])
+          this.isLoading=false;
+          this.toastr.success("Verification Email has been sent to EmailId")
+          // this.onSuccess(res.token)
+          // this.router.navigate(['/profile/new'])
         },
         (err) => {
           if(err.status === 400){
@@ -70,7 +73,6 @@ export class AuthComponent {
     localStorage.setItem('token','Bearer '+token);
     this.userService.isAuthenticated.next(true)
     this.isLoading=false
-    
   }
 
   showPassword(password:any){

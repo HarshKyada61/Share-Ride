@@ -5,6 +5,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './auth/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { VehiclesComponent } from './vehicles/vehicles.component';
+import { VerificationComponent } from './verification/verification.component';
 
 const routes: Routes = [
   {path: '', redirectTo:'/home',pathMatch:'full'},
@@ -12,7 +13,8 @@ const routes: Routes = [
   {path: 'home', component:HomeComponent, canActivate:[AuthGuard]},
   {path: 'profile', component:ProfileComponent, canActivate:[AuthGuard]},
   {path: 'profile/new', component:ProfileComponent, canActivate:[AuthGuard]},
-  {path: 'vehicles', component:VehiclesComponent, canActivate:[AuthGuard]}
+  {path: 'vehicles', component:VehiclesComponent, canActivate:[AuthGuard]},
+  {path: 'verify/:token', component:VerificationComponent}
 ];
 
 @NgModule({

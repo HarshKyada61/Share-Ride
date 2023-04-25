@@ -23,6 +23,11 @@ export class UserService {
     return this.http.post(this.URL+'/Signup', user)
   }
 
+  //verify Email
+  verify(token:any){
+    return this.http.get('http://localhost:3000/Share-Ride/verify/'+token)
+  }
+
   //Login API call
   login(user:any){
     return this.http.post(this.URL+'/Login', user)

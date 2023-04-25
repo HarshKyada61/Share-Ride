@@ -1,6 +1,9 @@
 import express from 'express';
 import User from '../model/user.js';
 import auth from '../middleware/auth.js'
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken'
+
 
 const router = new express.Router()
 
@@ -17,8 +20,8 @@ router.post('/Share-Ride/Signup', async (req, res) => {
     }
     try{
         await user.save();
-        const token = await user.generateToken()
-        res.status(201).send({token});
+        await sendVerifyMail(req.body.Email);
+        res.status(201).send();
     }
     catch(e){
         // console.log(e.message);
@@ -26,6 +29,48 @@ router.post('/Share-Ride/Signup', async (req, res) => {
     }
    
 })
+
+//verify email
+router.get('/Share-Ride/verify/:token',async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const decoded = jwt.verify(token, 'hrkyada');
+    const { email } = decoded;
+
+    let user = await User.findOne({Email:email})
+    user.status = 'verified'
+    const tokenid = await user.generateToken()
+
+    res.send({tokenid});
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
+
+const sendVerifyMail = async (email) => {
+    const token = jwt.sign({email}, 'hrkyada');
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'harshrkya123@gmail.com ',
+          pass: 'hoiyvegwlmlutdrh'
+        }
+    });
+
+    const info = await transporter.sendMail({
+        to: email,
+        subject: 'Verify your email',
+        html: `<p>Click <a href="http://localhost:4200/verify/${token}">here</a> to verify your email.</p>`
+      }).then(()=> {
+            console.log('mail sent');
+      }).catch((e) => {
+        console.log(e);
+      });
+
+}
 
 //Update user Profile
 router.patch('/Share-Ride/Profile/Update', auth, async (req, res) => {
@@ -46,6 +91,9 @@ router.post('/Share-Ride/Login', async (req, res) => {
    
     try{
         const user = await User.findByCredentials(req.body.Email, req.body.Password);
+        if(user.status !== 'verified'){
+            throw Error ('Email Verification is pending!')
+        }
         const token = await user.generateToken()
         res.status(201).send({token,user});
     }
@@ -86,6 +134,7 @@ router.delete('/Share-Ride/DeleteUser', auth, async(req, res) => {
     try{
         req.user['isDeleted'] = true;
         req.user['tokens'] = [];
+        req.user['status'] = 'pending'
         await req.user.save()   
         res.status(200).send()
 

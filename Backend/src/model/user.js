@@ -51,6 +51,14 @@ const userSchema = new mongoose.Schema({
         minlength:15,
         maxlength:15,
     },
+    status:{
+        type:String,
+        default:'pending',
+        enum:{
+            values:["verified", "pending"],
+            message: "{VALUE} is not supported"
+        }
+    },
     tokens: [{
         token: {
             type: String,

@@ -38,6 +38,18 @@ VehicleSchema.methods.toJSON = function () {
     return vehicleObject
 }
 
+VehicleSchema.pre('save', async function (next) {
+    const vehicle = this
+  
+    if(vehicle.isModified('VehicleNo')){
+        if(!(/^[A-Z]{2}\d{2}\s[A-Z]{2}\d{4}$/.test(vehicle.VehicleNo))){
+            throw Error('Vehicle Number is Invalid')
+        }
+    }
+
+    next()
+})
+
 const Vehicle = mongoose.model('Vehicle', VehicleSchema)
 
 export default Vehicle

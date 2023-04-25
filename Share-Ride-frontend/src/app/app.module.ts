@@ -11,6 +11,9 @@ import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { LocationInputComponent } from './home/location-input/location-input.component';
 import { VehiclesComponent } from './vehicles/vehicles.component';
+import {  ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { VerificationComponent } from './verification/verification.component';
 
 
 
@@ -23,12 +26,15 @@ import { VehiclesComponent } from './vehicles/vehicles.component';
     HomeComponent,
     LocationInputComponent,
     VehiclesComponent,
+    VerificationComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,14 +7,18 @@ const router = new express.Router()
 
 router.post('/Share-Ride/Add-Vehicle', auth, async (req, res) => {
     
-    try{
-        const vehicle = new Vehicles(req.body)
-        vehicle.user = req.user._id
-        await vehicle.save();
-        res.status(201).send();
-    }
-    catch(e){
-        res.status(400).send(e.message)
+    if(req.user.LicenceNo){
+        try{
+            const vehicle = new Vehicles(req.body)
+            vehicle.user = req.user._id
+            await vehicle.save();
+            res.status(201).send();
+        }
+        catch(e){
+            res.status(400).send(e.message)
+        }
+    }else{
+        res.status(401).send('You have to add Licence First!')
     }
     
 })

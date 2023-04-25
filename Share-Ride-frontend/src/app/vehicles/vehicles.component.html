@@ -36,7 +36,7 @@
               <form #form="ngForm">
                 <div class="mb-3">
                     <label for="VehicleNo" class="form-label">Vehicle Number*</label>
-                    <input type="text" class="form-control" id="vehicleNo" name="VehicleNo"  ngModel required>
+                    <input type="text" placeholder="Eg. ABXX ABXXXX" class="form-control" id="vehicleNo" name="VehicleNo" pattern="^[A-Z]{2}\d{2}\s[A-Z]{2}\d{4}"  ngModel required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Type*:</label>
