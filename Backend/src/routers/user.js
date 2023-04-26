@@ -20,7 +20,7 @@ router.post('/Share-Ride/Signup', async (req, res) => {
     }
     try{
         await user.save();
-        await sendVerifyMail(req.body.Email);
+        await sendMail(req.body.Email,'verify');
         res.status(201).send();
     }
     catch(e){
@@ -29,6 +29,7 @@ router.post('/Share-Ride/Signup', async (req, res) => {
     }
    
 })
+
 
 //verify email
 router.get('/Share-Ride/verify/:token',async (req, res) => {
@@ -48,7 +49,39 @@ router.get('/Share-Ride/verify/:token',async (req, res) => {
   }
 });
 
-const sendVerifyMail = async (email) => {
+//send password reset mail
+router.post('/Share-Ride/PasswordMail',async (req, res) => {
+    let {email} = req.body
+    let user = await User.findOne({Email:email})
+    if(!user){
+        res.status(404).send("This Email Does not Exist")
+    }
+    else{
+        sendMail(email,'resetPassword')
+        res.send({message:'email Sent'})
+    }
+})
+
+//Reset Password
+router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
+    const { token } = req.params;
+
+  try {
+    const decoded = jwt.verify(token, 'hrkyada');
+    const { email } = decoded;
+
+    let user = await User.findOne({Email:email})
+    console.log(req.body.password);
+    user['Password'] = req.body.password
+    await user.save()
+    res.status(200).send({message:'Password Updated'})
+  }catch(e){
+    res.status(400).send(e.message);
+  }
+})
+
+//sendmail
+const sendMail = async (email,process) => {
     const token = jwt.sign({email}, 'hrkyada');
 
     // create reusable transporter object using the default SMTP transport
@@ -60,13 +93,23 @@ const sendVerifyMail = async (email) => {
         }
     });
 
-    const info = await transporter.sendMail({
-        to: email,
-        subject: 'Verify your email',
-        html: `<p>Click <a href="http://localhost:4200/verify/${token}">here</a> to verify your email.</p>`
-      }).then(()=> {
-            console.log('mail sent');
-      }).catch((e) => {
+    let message= {}
+    if(process==='verify'){
+        message = {
+            to: email,
+            subject: 'Verify Email',
+            html: `<p>Click <a href="http://localhost:4200/${process}/${token}">here</a> to verify your email.</p>`
+          }
+    }
+    else{
+        message = {
+            to: email,
+            subject: 'Reset Your Password',
+            html: `<p>Click <a href="http://localhost:4200/${process}/${token}">here</a> to Reset Your Password.</p>`
+          }
+    }
+
+    const info = await transporter.sendMail(message).catch((e) => {
         console.log(e);
       });
 

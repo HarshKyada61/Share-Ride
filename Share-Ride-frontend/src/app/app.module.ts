@@ -13,7 +13,8 @@ import { LocationInputComponent } from './home/location-input/location-input.com
 import { VehiclesComponent } from './vehicles/vehicles.component';
 import {  ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { VerificationComponent } from './verification/verification.component';
+import { VerificationComponent } from './auth/verification/verification.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 
 
@@ -27,6 +28,7 @@ import { VerificationComponent } from './verification/verification.component';
     LocationInputComponent,
     VehiclesComponent,
     VerificationComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

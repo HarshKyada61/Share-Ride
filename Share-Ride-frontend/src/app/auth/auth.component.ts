@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ export class AuthComponent {
   isLoginMode = false;
   error=false;
   isLoading=false;
+  forgetpassword=false;
 
   constructor(public userService: UserService, public router:Router, private toastr: ToastrService) {}
 
@@ -33,14 +34,12 @@ export class AuthComponent {
         "MobileNo": form.value.MobileNo,
         "Password": form.value.Password,
       }
-      this.userService.signup(user).subscribe(
-        (res: any) => {
+      this.userService.signup(user).subscribe({
+        next:(res: any) => {
           this.isLoading=false;
           this.toastr.success("Verification Email has been sent to EmailId")
-          // this.onSuccess(res.token)
-          // this.router.navigate(['/profile/new'])
         },
-        (err) => {
+        error:(err) => {
           if(err.status === 400){
             alert(err.error)  
           }
@@ -48,15 +47,15 @@ export class AuthComponent {
             alert("An Error Ocuured")
           }
           this.isLoading=false
-        }
+        }}
       );
     } else {
-      this.userService.login(form.value).subscribe(
-        (res: any) => {
+      this.userService.login(form.value).subscribe({
+        next:(res: any) => {
           this.onSuccess(res.token);
           this.router.navigate(['/'])
         },
-        (err) => {
+        error:(err) => {
           if(err.status === 400){
             this.error = true;
           }
@@ -64,14 +63,13 @@ export class AuthComponent {
             alert("An Error Ocuured")
           }
           this.isLoading=false
-        }
+        }}
       );
     }
   }
 
   onSuccess(token:string){
-    localStorage.setItem('token','Bearer '+token);
-    this.userService.isAuthenticated.next(true)
+    this.userService.setToken(token)
     this.isLoading=false
   }
 
@@ -84,4 +82,16 @@ export class AuthComponent {
     }
   }
 
+  toggleFP(){
+    this.forgetpassword= !this.forgetpassword
+  }
+
+  resetPassword(email:NgModel){
+    this.userService.sendResetMail(email.value).subscribe({next:(res:any) => {
+      this.toastr.success(res.message)
+    }
+    ,error:(err) => {
+      this.toastr.error(err.error)
+    }})
+  }
 }

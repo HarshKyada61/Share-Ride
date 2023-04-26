@@ -12,9 +12,7 @@ export class HeaderComponent {
   constructor(public router:Router,public userService: UserService){}
 
   logout(){
-
     this.userService.logout().subscribe(() => {
-      localStorage.removeItem('token');
       this.router.navigate(['/auth'])
     })
   }

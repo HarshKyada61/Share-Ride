@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-verification',
@@ -18,20 +18,20 @@ export class VerificationComponent implements OnInit {
 
   verify() {
     this.route.params.subscribe((params) => {
-      this.UserService.verify(params['token']).subscribe(
-        (res: any) => {
+      this.UserService.verify(params['token']).subscribe({
+        next:(res: any) => {
           localStorage.setItem('token', 'Bearer ' + res.tokenid);
           this.UserService.isAuthenticated.next(true);
           this.router.navigate(['/profile/new']);
         },
-        (err) => {
+        error:(err) => {
           if (err.status === 400) {
             alert(err.error);
           } else {
             console.log(err);
             
           }
-        }
+        }}
       );
     });
   }
