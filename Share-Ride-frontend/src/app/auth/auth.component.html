@@ -36,10 +36,15 @@
       
           <button class="button" [disabled]="!signupform.valid">Sign up</button>
         </form>
+        <div class="d-flex justify-content-center my-auto" *ngIf="isLoading">
+          <div class="spinner-border text-primary"  role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
       </div>
 
       <div class="login">
-        <form (ngSubmit)="onSubmit(loginform)" #loginform="ngForm" *ngIf="!isLoading">
+        <form (ngSubmit)="onSubmit(loginform)" #loginform="ngForm" *ngIf="!isLoginLoading">
           <label for="chk" aria-hidden="true">Login</label>
 
           <div class="input-control">
@@ -66,8 +71,8 @@
           <span class="alert">*Invalid Email or Password!!</span>
         </div>
 
-        <div class="d-flex justify-content-center my-auto">
-          <div class="spinner-border text-primary" *ngIf="isLoading" role="status">
+        <div class="d-flex justify-content-center my-auto" *ngIf="isLoginLoading">
+          <div class="spinner-border text-primary"  role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
