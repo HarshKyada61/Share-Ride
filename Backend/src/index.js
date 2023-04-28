@@ -1,6 +1,11 @@
 import app from './app.js'
 import './db/mongoose.js'
+import dotenv from 'dotenv'
 
-app.listen(3000, () => {
-    console.log("Listning......")
+dotenv.config()
+
+const PORT = process.env.PORT
+
+app.listen(PORT, () => {
+    console.log(`Listning...... at ${PORT}`)
 })

@@ -3,7 +3,7 @@
     <app-location-input id="Source" [inputText]="srcLocation?.place_name" (SetLocationEvent)="setSrc($event)" (SetCurLocationEvent)="setAsCurLocation()" (chosefromMap)="srcOnMap()"></app-location-input>
     <i class="fa-sharp fa-solid fa-arrow-right fa-lg"></i>
     <app-location-input id="Destination" [inputText]="destLocation?.place_name" (SetLocationEvent)="setDest($event)" (chosefromMap)="destOnMap()"></app-location-input>
-    <button class="btn btn-primary">Search</button>
+    <button class="btn btn-primary" (click)="findRoute()">Search</button>
 </form>
 <div class="gps">
     <button style="border-radius: 50%;" (click)="getCurrentLocation()"><i class="fa-solid fa-location-arrow"></i></button>

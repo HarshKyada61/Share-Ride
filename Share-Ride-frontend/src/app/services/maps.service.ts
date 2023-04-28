@@ -35,4 +35,8 @@ export class MapsService {
         })
       );
   }
+
+  searchRoute(slng:number,slat:number,elng:number,elat:number){
+    return this.http.get(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic	/${slng},${slat};${elng},${elat}?alternatives=true&annotations=distance&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ`)
+  }
 }

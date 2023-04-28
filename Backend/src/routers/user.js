@@ -2,10 +2,11 @@ import express from 'express';
 import User from '../model/user.js';
 import auth from '../middleware/auth.js'
 import nodemailer from 'nodemailer';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
 
 const router = new express.Router()
+
 
 //user Signup (create user)
 router.post('/Share-Ride/Signup', async (req, res) => {
@@ -24,7 +25,6 @@ router.post('/Share-Ride/Signup', async (req, res) => {
         res.status(201).send();
     }
     catch(e){
-        // console.log(e.message);
         res.status(400).send(e.message)
     }
    
@@ -36,7 +36,7 @@ router.get('/Share-Ride/verify/:token',async (req, res) => {
   const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, 'hrkyada');
+    const decoded = jwt.verify(token, process.env.KEY);
     const { email } = decoded;
 
     let user = await User.findOne({Email:email})
@@ -67,7 +67,7 @@ router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
     const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, 'hrkyada');
+    const decoded = jwt.verify(token, process.env.KEY);
     const { email } = decoded;
 
     let user = await User.findOne({Email:email})
@@ -81,31 +81,31 @@ router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
 })
 
 //sendmail
-const sendMail = async (email,process) => {
-    const token = jwt.sign({email}, 'hrkyada');
+const sendMail = async (email,action) => {
+    const token = jwt.sign({email}, process.env.KEY);
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'harshrkya123@gmail.com ',
-          pass: 'hoiyvegwlmlutdrh'
+          user: process.env.EMAIL,
+          pass: process.env.PASSWORD
         }
     });
 
     let message= {}
-    if(process==='verify'){
+    if(action==='verify'){
         message = {
             to: email,
             subject: 'Verify Email',
-            html: `<p>Click <a href="http://localhost:4200/${process}/${token}">here</a> to verify your email.</p>`
+            html: `<p>Click <a href="http://localhost:4200/${action}/${token}">here</a> to verify your email.</p>`
           }
     }
     else{
         message = {
             to: email,
             subject: 'Reset Your Password',
-            html: `<p>Click <a href="http://localhost:4200/${process}/${token}">here</a> to Reset Your Password.</p>`
+            html: `<p>Click <a href="http://localhost:4200/${action}/${token}">here</a> to Reset Your Password.</p>`
           }
     }
 

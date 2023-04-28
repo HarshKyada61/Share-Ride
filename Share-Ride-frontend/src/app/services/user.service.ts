@@ -27,7 +27,7 @@ export class UserService {
 
   //verify Email
   verify(token: any) {
-    return this.http.get('http://localhost:3000/Share-Ride/verify/' + token);
+    return this.http.get(this.URL + '/verify/' + token);
   }
 
   //Login API call

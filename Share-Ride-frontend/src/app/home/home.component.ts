@@ -27,15 +27,15 @@ export class HomeComponent implements OnInit{
   sourceMarker=new mapboxgl.Marker({ color: 'red',})
   destMarker=new mapboxgl.Marker({ color: 'true'})
 
-  srcLocation:{
+  srcLocation: {
     cords: LngLatLike;
     place_name: string;
-  } | undefined
+  } |undefined; 
 
-  destLocation : {
+  destLocation: {
     cords: LngLatLike;
     place_name: string;
-  } | undefined
+  } | undefined; 
   
   ngOnInit(){
     this.map = new mapboxgl.Map({
@@ -133,4 +133,47 @@ export class HomeComponent implements OnInit{
     this.map.on('click',this.setdestMarker)
   }
   //
+
+  findRoute(){
+    const srccords:any=this.srcLocation?.cords
+    const destcords:any= this.destLocation?.cords
+    
+    this.MapService.searchRoute(srccords[0],srccords[1],destcords[0],destcords[1]).subscribe((res:any)=> {
+      console.log(res);
+      const data = res.routes[0];
+      const route = data.geometry.coordinates;
+      const geojson = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: route
+        }
+      };
+      // if the route already exists on the map, we'll reset it using setData
+      if (this.map.getSource('route')) {
+        this.map.getSource('route').setData(geojson);
+      }
+      // otherwise, we'll make a new request
+      else {
+        this.map.addLayer({
+          id: 'route',
+          type: 'line',
+          source: {
+            type: 'geojson',
+            data: geojson
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#3887be',
+            'line-width': 5,
+            'line-opacity': 0.75
+          }
+        });
+      }
+    })
+  }
 }

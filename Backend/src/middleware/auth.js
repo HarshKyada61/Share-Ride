@@ -4,7 +4,7 @@ import User from '../model/user.js';
 const auth = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '');
-        const decoded = jwt.verify(token, 'hrkyada');
+        const decoded = jwt.verify(token, process.env.KEY);
         const user = await User.findOne({_id: decoded._id, 'tokens.token':token})
         
         if(!user){

@@ -14,9 +14,7 @@ export class VerificationComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
-
-  verify() {
+  ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.UserService.verify(params['token']).subscribe({
         next:(res: any) => {
@@ -29,10 +27,10 @@ export class VerificationComponent implements OnInit {
             alert(err.error);
           } else {
             console.log(err);
-            
           }
         }}
       );
     });
   }
+
 }

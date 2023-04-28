@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AuthComponent {
   isLoginMode = false;
   error=false;
+  eMessage='';
   isLoading=false;
   forgetpassword=false;
   isLoginLoading=false
@@ -43,12 +44,12 @@ export class AuthComponent {
         },
         error:(err) => {
           if(err.status === 400){
-            alert(err.error)  
+            this.toastr.error(err.error)  
           }
           else{
-            // alert("An Error Ocuured")
+            this.toastr.error('An Error Occured')
           }
-          // this.isLoading=false
+          this.isLoading=false
         }}
       );
     } else {
@@ -62,9 +63,10 @@ export class AuthComponent {
         error:(err) => {
           if(err.status === 400){
             this.error = true;
+            this.eMessage = err.error
           }
           else{
-            alert("An Error Ocuured")
+            this.toastr.error('An Error Occured')
           }
           this.isLoginLoading=false
         }}

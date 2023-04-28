@@ -1,12 +1,12 @@
 <div class="body">
   <div class="main">
 
-    <div *ngIf="!forgetpassword">
+    <div class="xyz" *ngIf="!forgetpassword">
       <input type="checkbox" id="chk" aria-hidden="true"  (change)="checkValue($event)" />
 
       <div class="signup">
         <form (ngSubmit)="onSubmit(signupform)" #signupform="ngForm" *ngIf="!isLoading">
-          <label for="chk" aria-hidden="true">Sign up</label>
+          <label  for="chk" aria-hidden="true">Sign up</label>
 
           <div class="input-control">
             <input type="text" class="form-control" id="name" ngModel required name="Name" placeholder="Name" required #name="ngModel"/>
@@ -36,7 +36,7 @@
       
           <button class="button" [disabled]="!signupform.valid">Sign up</button>
         </form>
-        <div class="d-flex justify-content-center my-auto" *ngIf="isLoading">
+        <div class="d-flex justify-content-center " style="padding-top: 200px;" *ngIf="isLoading">
           <div class="spinner-border text-primary"  role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
@@ -68,10 +68,10 @@
         </form>
 
         <div class="input-control" *ngIf="error">
-          <span class="alert">*Invalid Email or Password!!</span>
+          <span class="alert">*{{eMessage}}</span>
         </div>
 
-        <div class="d-flex justify-content-center my-auto" *ngIf="isLoginLoading">
+        <div class="d-flex justify-content-center" style="padding-top: 200px;" *ngIf="isLoginLoading">
           <div class="spinner-border text-primary"  role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
