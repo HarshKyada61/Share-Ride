@@ -31,7 +31,8 @@ input.ng-invalid.ng-touched {
 	display: none;
 }
 .signup{
-	position: relative;
+	/* position: relative; */
+	min-height: 430px;
 	width:100%;
 	height: 100%;
     margin-top: 10px;
@@ -86,7 +87,7 @@ button:hover{
 	height: 560px;
 	background: #eee;
 	border-radius: 60% / 10%;
-	transform: translateY(-0px);
+	/* transform: translateY(-px); */
 	transition: .8s ease-in-out;
 }
 .login label{

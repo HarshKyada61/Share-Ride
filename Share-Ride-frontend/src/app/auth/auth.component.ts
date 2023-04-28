@@ -15,6 +15,7 @@ export class AuthComponent {
   error=false;
   isLoading=false;
   forgetpassword=false;
+  isLoginLoading=false
 
   constructor(public userService: UserService, public router:Router, private toastr: ToastrService) {}
 
@@ -25,9 +26,10 @@ export class AuthComponent {
 
   onSubmit(form: NgForm) {
     event?.preventDefault();
-    this.isLoading = true
-
+    // this.isLoading = true
+    this.error = false
     if (!this.isLoginMode) {
+      this.isLoading = true
       const user = {
         "Name": form.value.Name,
         "Email": form.value.Email,
@@ -44,15 +46,17 @@ export class AuthComponent {
             alert(err.error)  
           }
           else{
-            alert("An Error Ocuured")
+            // alert("An Error Ocuured")
           }
-          this.isLoading=false
+          // this.isLoading=false
         }}
       );
     } else {
+      this.isLoginLoading = true
       this.userService.login(form.value).subscribe({
         next:(res: any) => {
-          this.onSuccess(res.token);
+          this.userService.setToken(res.token)
+          this.isLoginLoading=false
           this.router.navigate(['/'])
         },
         error:(err) => {
@@ -62,15 +66,14 @@ export class AuthComponent {
           else{
             alert("An Error Ocuured")
           }
-          this.isLoading=false
+          this.isLoginLoading=false
         }}
       );
     }
   }
 
   onSuccess(token:string){
-    this.userService.setToken(token)
-    this.isLoading=false
+    
   }
 
   showPassword(password:any){
