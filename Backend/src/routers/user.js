@@ -41,9 +41,9 @@ router.get('/Share-Ride/verify/:token',async (req, res) => {
 
     let user = await User.findOne({Email:email})
     user.status = 'verified'
-    const tokenid = await user.generateToken()
-
-    res.send({tokenid});
+    await user.save()
+    
+    res.redirect('http://localhost:4200/auth')
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -98,7 +98,7 @@ const sendMail = async (email,action) => {
         message = {
             to: email,
             subject: 'Verify Email',
-            html: `<p>Click <a href="http://localhost:4200/${action}/${token}">here</a> to verify your email.</p>`
+            html: `<p>Click <a href="http://localhost:3000/Share-Ride/${action}/${token}">here</a> to verify your email.</p>`
           }
     }
     else{

@@ -13,7 +13,6 @@ import { LocationInputComponent } from './home/location-input/location-input.com
 import { VehiclesComponent } from './vehicles/vehicles.component';
 import {  ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { VerificationComponent } from './auth/verification/verification.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { PageNOtFoundComponent } from './page-not-found/page-not-found.component';
 
@@ -28,7 +27,6 @@ import { PageNOtFoundComponent } from './page-not-found/page-not-found.component
     HomeComponent,
     LocationInputComponent,
     VehiclesComponent,
-    VerificationComponent,
     ResetPasswordComponent,
     PageNOtFoundComponent,
   ],

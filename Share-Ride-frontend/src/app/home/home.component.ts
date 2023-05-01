@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit{
   curMarker=new mapboxgl.Marker( {element:this.el})
   sourceMarker=new mapboxgl.Marker({ color: 'red',})
   destMarker=new mapboxgl.Marker({ color: 'true'})
-
+  
   srcLocation: {
     cords: LngLatLike;
     place_name: string;
@@ -36,6 +36,10 @@ export class HomeComponent implements OnInit{
     cords: LngLatLike;
     place_name: string;
   } | undefined; 
+
+  Distance:number|undefined;
+  Duration:string|undefined;
+  cost:number|undefined
   
   ngOnInit(){
     this.map = new mapboxgl.Map({
@@ -77,6 +81,9 @@ export class HomeComponent implements OnInit{
       place_name :event.place_name
     }
     this.putMarker(this.srcLocation.cords, this.sourceMarker)    
+    if(this.destLocation){
+      this.findRoute()
+    }
   }
 
   setAsCurLocation(){
@@ -88,8 +95,9 @@ export class HomeComponent implements OnInit{
         place_name :res
       }
     })
-
-    
+    if(this.destLocation){
+      this.findRoute()
+    }
   }
 
   setDest(event:any){
@@ -97,7 +105,10 @@ export class HomeComponent implements OnInit{
       cords : event.geometry.coordinates ,
       place_name :event.place_name
     }
-    this.putMarker(this.destLocation.cords, this.destMarker)    
+    this.putMarker(this.destLocation.cords, this.destMarker)   
+    if(this.srcLocation){
+      this.findRoute()
+    } 
   }
   //
  
@@ -109,7 +120,9 @@ export class HomeComponent implements OnInit{
         cords : [e.lngLat.lng, e.lngLat.lat],
         place_name :res
       }
-     
+      if(this.destLocation){
+        this.findRoute()
+      }
     })
   }
 
@@ -119,6 +132,9 @@ export class HomeComponent implements OnInit{
       this.destLocation = {
         cords : [e.lngLat.lng, e.lngLat.lat],
         place_name :res
+      }
+      if(this.srcLocation){
+        this.findRoute()
       }
     })
   }
@@ -134,6 +150,7 @@ export class HomeComponent implements OnInit{
   }
   //
 
+  //findRoute
   findRoute(){
     const srccords:any=this.srcLocation?.cords
     const destcords:any= this.destLocation?.cords
@@ -141,6 +158,9 @@ export class HomeComponent implements OnInit{
     this.MapService.searchRoute(srccords[0],srccords[1],destcords[0],destcords[1]).subscribe((res:any)=> {
       console.log(res);
       const data = res.routes[0];
+      this.Distance = (data.distance/1000);
+      this.Duration = this.formateTime(data.duration/60)
+      this.findCost(data.distance/1000, data.duration/60)
       const route = data.geometry.coordinates;
       const geojson = {
         type: 'Feature',
@@ -150,6 +170,43 @@ export class HomeComponent implements OnInit{
           coordinates: route
         }
       };
+
+            // const data1 = res.routes[1];
+            // const route1 = data1.geometry.coordinates;
+            // const geojson1 = {
+            //   type: 'Feature',
+            //   properties: {},
+            //   geometry: {
+            //     type: 'LineString',
+            //     coordinates: route1
+            //   }
+            // };
+
+            // // if the route already exists on the map, we'll reset it using setData
+            // if (this.map.getSource('route1')) {
+            //   this.map.getSource('route1').setData(geojson1);
+            // }
+            // // otherwise, we'll make a new request
+            // else {
+            //   this.map.addLayer({
+            //     id: 'route1',
+            //     type: 'line',
+            //     source: {
+            //       type: 'geojson',
+            //       data: geojson1
+            //     },
+            //     layout: {
+            //       'line-join': 'round',
+            //       'line-cap': 'round'
+            //     },
+            //     paint: {
+            //       'line-color': 'red',
+            //       'line-width': 7,
+            //       'line-opacity': 0.75
+            //     }
+            //   });
+            // }
+
       // if the route already exists on the map, we'll reset it using setData
       if (this.map.getSource('route')) {
         this.map.getSource('route').setData(geojson);
@@ -176,4 +233,22 @@ export class HomeComponent implements OnInit{
       }
     })
   }
+
+  //Formate Time
+  formateTime(time:number){
+    const hours = Math.floor(time/60)
+    const minutes = Math.floor(time%60)
+    if(hours<1){
+      return minutes+'mins'
+    }
+    else{
+      return hours+'hrs '+minutes+'mins'
+    }
+  }
+
+  // findCost
+  findCost(distance:number,time:number){
+    this.cost = distance * 4 + time *3;
+  }
 }
+

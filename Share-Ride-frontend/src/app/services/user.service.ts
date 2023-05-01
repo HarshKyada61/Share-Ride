@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Subscription, catchError, delay, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environment/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class UserService {
   timeout = 86400;
   tokenSubscription: Subscription | undefined;
 
-  URL = 'http://localhost:3000/Share-Ride';
+  URL = environment.URL;
   setHeaders(token: any) {
     return {
       headers: { Authorization: token },

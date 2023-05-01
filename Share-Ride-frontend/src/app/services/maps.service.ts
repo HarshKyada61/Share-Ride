@@ -1,19 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
+import { environment } from '../../environment/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapsService {
   constructor(private http: HttpClient) {}
+  AccessKey = environment.MapboxKey
 
   searchPlace(address: any) {
     return this.http
       .get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/` +
           encodeURIComponent(address) +
-          `.json?access_token=pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ`
+          `.json?access_token=`+this.AccessKey
       )
       .pipe(map((res: any) => res.features));
   }
@@ -25,7 +27,7 @@ export class MapsService {
           lng +
           `,` +
           lat +
-          `.json?access_token=pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ`
+          `.json?access_token=`+this.AccessKey
       )
       .pipe(
         map((res: any) => {
@@ -37,6 +39,6 @@ export class MapsService {
   }
 
   searchRoute(slng:number,slat:number,elng:number,elat:number){
-    return this.http.get(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic	/${slng},${slat};${elng},${elat}?alternatives=true&annotations=distance&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ`)
+    return this.http.get(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic	/${slng},${slat};${elng},${elat}?alternatives=true&annotations=distance&overview=full&geometries=geojson&access_token=`+this.AccessKey)
   }
 }
