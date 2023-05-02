@@ -75,6 +75,11 @@ export class UserService {
     return this.http.patch(this.URL+'/ResetPassword/'+token,{password})
   }
 
+  //Chech Reset Password Link
+  CheckLink(token:string){
+    return this.http.get(this.URL+'/checkReset/'+token)
+  }
+
   setToken(token: any) {
     this.isAuthenticated.next(true);
     localStorage.setItem('token', 'Bearer ' + token);

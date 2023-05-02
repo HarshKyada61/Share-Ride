@@ -3,6 +3,7 @@ import User from '../model/user.js';
 import auth from '../middleware/auth.js'
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
+import auditLog from 'mongoose-audit-log'
 
 
 const router = new express.Router()
@@ -25,6 +26,7 @@ router.post('/Share-Ride/Signup', async (req, res) => {
         res.status(201).send();
     }
     catch(e){
+        console.log(e);
         res.status(400).send(e.message)
     }
    
@@ -35,16 +37,23 @@ router.post('/Share-Ride/Signup', async (req, res) => {
 router.get('/Share-Ride/verify/:token',async (req, res) => {
   const { token } = req.params;
 
+
   try {
     const decoded = jwt.verify(token, process.env.KEY);
     const { email } = decoded;
 
     let user = await User.findOne({Email:email})
-    user.status = 'verified'
-    await user.save()
-    
-    res.redirect('http://localhost:4200/auth')
+    if(user.status === 'verified'){
+        res.send('This Link has Expired!!')
+    }
+    else{
+        user.status = 'verified'
+        await user.save()
+        
+        res.redirect('http://localhost:4200/auth')
+    }
   } catch (err) {
+    console.log(err);
     res.status(400).send(err.message);
   }
 });
@@ -62,6 +71,21 @@ router.post('/Share-Ride/PasswordMail',async (req, res) => {
     }
 })
 
+//check reset password link validation
+router.get('/Share-Ride/checkReset/:token', async (req, res)=> {
+    const { token } = req.params;
+    const decoded = jwt.verify(token, process.env.KEY);
+    const { email } = decoded;
+
+    let user = await User.findOne({Email:email});
+    if(user.resetToken){
+        res.send({message:true})
+    }
+    else{
+        res.send({message:false})
+    }
+})
+
 //Reset Password
 router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
     const { token } = req.params;
@@ -71,7 +95,8 @@ router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
     const { email } = decoded;
 
     let user = await User.findOne({Email:email})
-    console.log(req.body.password);
+    // console.log(req.body.password);
+    user.resetToken = undefined
     user['Password'] = req.body.password
     await user.save()
     res.status(200).send({message:'Password Updated'})
@@ -83,6 +108,7 @@ router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
 //sendmail
 const sendMail = async (email,action) => {
     const token = jwt.sign({email}, process.env.KEY);
+    const user =await User.findOne({Email:email})
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -102,6 +128,8 @@ const sendMail = async (email,action) => {
           }
     }
     else{
+        user.resetToken=token;
+        await user.save();
         message = {
             to: email,
             subject: 'Reset Your Password',
@@ -124,6 +152,7 @@ router.patch('/Share-Ride/Profile/Update', auth, async (req, res) => {
         res.status(200).send()
         
     }catch(e){
+        console.log(e);
         res.status(400).send(e.message)
     }
 })
@@ -162,6 +191,13 @@ router.post('/Share-Ride/Logout', auth, async (req, res) => {
 //get User Details
 router.get('/Share-Ride/Profile',auth, async(req, res) => {
     const user = req.user;
+    // User.audit((err, log) => {
+    //     if (err) {
+    //       console.error('Error retrieving audit log:', err);
+    //     } else {
+    //       console.log('Audit log:', log);
+    //     }
+    //   });
     try{
         res.status(200).send(user)
     }

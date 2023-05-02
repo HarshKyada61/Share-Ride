@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
@@ -8,9 +8,22 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css']
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
 
+  isexpired=false;
   constructor(private route: ActivatedRoute, private userService: UserService, private router: Router){}
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.userService.CheckLink(params['token']).subscribe({next:(res:any)=> {
+        this.isexpired = !res.message;
+        console.log(this.isexpired);
+        
+      },error:(err)=>{
+        console.log(err);
+      }})
+    })
+  }
 
   ResetPassword(form:NgForm){
 

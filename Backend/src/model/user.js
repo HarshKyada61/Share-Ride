@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
+
+
 
 const userSchema = new mongoose.Schema({
     Name: {
@@ -65,6 +67,9 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
+    resetToken:{
+        type:String
+    },
     isDeleted:{
         type: Boolean,
         default: false,
