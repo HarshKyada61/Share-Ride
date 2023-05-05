@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
 
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
-          if(event.url === '/auth' || event.url.includes('/verify')){
+          if(event.url === '/auth' || event.url.includes('/verify') || event.url.includes('/resetPassword')){
             this.isAuthRoute = true;
           }
           else{

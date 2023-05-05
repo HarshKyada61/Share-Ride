@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-
+import auditLog from 'mongoose-audit-log'
 
 
 const userSchema = new mongoose.Schema({
@@ -78,6 +78,16 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// userSchema.plugin(auditLog.plugin, {
+//     modelName: 'User',
+//   });
+
+userSchema.virtual('vehicles', {
+    ref: 'Vehicle',
+    localField: '_id',
+    foreignField: 'user'
+})
+
 userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
@@ -85,6 +95,8 @@ userSchema.methods.toJSON = function () {
     delete userObject.Password
     delete userObject.tokens
     delete userObject.isDeleted
+    delete userObject.resetToken
+    delete userObject.status
     delete userObject.__v
 
     return userObject

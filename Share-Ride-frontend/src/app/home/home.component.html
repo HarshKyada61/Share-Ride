@@ -1,23 +1,118 @@
-<form style="background: transparent; padding: 10px;">
-    
-    <app-location-input id="Source" [inputText]="srcLocation?.place_name" (SetLocationEvent)="setSrc($event)" (SetCurLocationEvent)="setAsCurLocation()" (chosefromMap)="srcOnMap()"></app-location-input>
-    <i class="fa-sharp fa-solid fa-arrow-right fa-lg"></i>
-    <app-location-input id="Destination" [inputText]="destLocation?.place_name" (SetLocationEvent)="setDest($event)" (chosefromMap)="destOnMap()"></app-location-input>
-    
+<form style="background: transparent; padding: 10px">
+  <app-location-input
+    id="Source"
+    [inputText]="srcLocation?.place_name"
+    (SetLocationEvent)="setSrc($event)"
+    (SetCurLocationEvent)="setAsCurLocation()"
+    (chosefromMap)="srcOnMap()"
+  ></app-location-input>
+  <i class="fa-sharp fa-solid fa-arrow-right fa-lg"></i>
+  <app-location-input
+    id="Destination"
+    [inputText]="destLocation?.place_name"
+    (SetLocationEvent)="setDest($event)"
+    (chosefromMap)="destOnMap()"
+  ></app-location-input>
 </form>
 <div class="gps">
-    <button style="border-radius: 50%;" (click)="getCurrentLocation()"><i class="fa-solid fa-location-arrow"></i></button>
+  <button style="border-radius: 50%" (click)="getCurrentLocation()">
+    <i class="fa-solid fa-location-arrow"></i>
+  </button>
 </div>
-<div id='map'>
-</div>
-<div class="details card" *ngIf="Distance"> 
-    <div class="card-header bg-warning text-center">
-        
-    <h4 >Details</h4></div>
-    <div class="card-body">
-    <h5>Distance: {{Distance.toFixed(2)+'Km'}}</h5>
-    <h5>Duration: {{Duration}}</h5>
-    <h5>Total Fare: {{ cost?.toFixed(2)+'Rs'}}</h5>
-    </div>
+<div id="map"></div>
+<div class="details card" *ngIf="Distance">
+  <div class="card-header bg-warning text-center">
+    <h4>Details</h4>
+  </div>
+  <div class="card-body">
+    <h5>Distance: {{ Distance.toFixed(2) + "Km" }}</h5>
+    <h5>Duration: {{ Duration }}</h5>
+    <h5>Total Fare: {{ cost?.toFixed(2) + "Rs" }}</h5>
+  </div>
+  <div class="card-footer" style="background: none;">
+    <button
+      class="btn btn-primary m-2"
+      data-bs-toggle="modal"
+      data-bs-target="#vehicleModal"
+    >
+      Make Ride
+    </button>
+    <button class="btn btn-warning m-2">Take Ride</button>
+  </div>
 </div>
 
+<div
+  class="modal fade"
+  id="vehicleModal"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-modal="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Choose Vehicle</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form
+        (ngSubmit)="createRide(form)"
+        #form="ngForm"
+        *ngIf="vehicles?.length !== 0"
+      >
+        <div class="modal-body">
+          <label for="vehicles">Select Your Vehicle: </label>
+          <select name="vehicles" id="vehicles" ngModel #selectedVehicle="ngModel">
+            <option
+              *ngFor="let vehicle of vehicles; index as i"
+              value="{{ i }}"
+            >
+              {{ vehicle.VehicleNo }}
+            </option>
+          </select>
+
+          <div *ngIf="selectedVehicle.value">
+            <div *ngIf="vehicles[selectedVehicle.value].Type === '4-Wheeler'">
+                <label for="seats">Seats Available: </label>
+                <select name="seats" id="seats" ngModel #seatsSelected="ngModel">
+                    <option *ngFor="let s of seats" value="{{s}}">{{s}}</option>
+                </select>
+            </div>
+        </div>
+
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+            *ngIf="vehicles?.length !== 0"
+          >
+            Make Ride
+          </button>
+        </div>
+      </form>
+      <div class="modal-body" *ngIf="vehicles?.length === 0"><p>Please Add Your vehicle First!!</p></div>
+      <div class="modal-footer" *ngIf="vehicles?.length === 0">  <button
+        type="button"
+        class="btn btn-primary"
+        routerLink="/vehicles"
+        data-bs-dismiss="modal"
+      >
+        Add Vehicle
+      </button></div>
+    </div>
+  </div>
+</div>

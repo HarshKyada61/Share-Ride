@@ -3,7 +3,7 @@ import User from '../model/user.js';
 import auth from '../middleware/auth.js'
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import auditLog from 'mongoose-audit-log'
+
 
 
 const router = new express.Router()
@@ -21,6 +21,7 @@ router.post('/Share-Ride/Signup', async (req, res) => {
         user.isDeleted = false;
     }
     try{
+       
         await user.save();
         await sendMail(req.body.Email,'verify');
         res.status(201).send();

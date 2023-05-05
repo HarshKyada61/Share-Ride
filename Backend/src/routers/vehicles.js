@@ -4,7 +4,7 @@ import auth from '../middleware/auth.js'
 
 const router = new express.Router()
 
-
+//add Vehicle
 router.post('/Share-Ride/Add-Vehicle', auth, async (req, res) => {
     
     if(req.user.LicenceNo){
@@ -23,7 +23,7 @@ router.post('/Share-Ride/Add-Vehicle', auth, async (req, res) => {
     
 })
 
-
+//get vehicle
 router.get('/Share-Ride/Vehicles',auth, async(req, res) => {
     try{
         const vehicles = await Vehicles.find({user:req.user._id})

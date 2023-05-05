@@ -27,6 +27,7 @@ const VehicleSchema = new mongoose.Schema({
     timestamps: true
 })
 
+
 VehicleSchema.methods.toJSON = function () {
     const vehicle = this
     const vehicleObject = vehicle.toObject()
