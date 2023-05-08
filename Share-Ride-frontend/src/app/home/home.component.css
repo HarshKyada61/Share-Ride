@@ -1,3 +1,7 @@
+select.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
 #map {
     position: absolute;
     top: 0;
@@ -17,7 +21,6 @@
     margin: 20px;
     width: 20%;
     top: 20%;
-    /* bottom: 20%; */
     padding: 20px;
     background-color: #8de5fd;
     font-family: sans-serif;

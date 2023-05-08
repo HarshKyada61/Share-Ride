@@ -15,8 +15,18 @@ export class RideService{
 
     constructor(private http: HttpClient) {}
 
-    createRide(Ride:any){
+    offerRide(Ride:any){
         const options = this.setHeaders(localStorage.getItem('token'));
         return this.http.post(this.URL + '/MakeRide', Ride, options);
+    }
+
+    takeRide(Ride:any){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.post(this.URL + '/TakeRide', Ride, options);
+    }
+
+    findRide(Route:any){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.post(this.URL + '/FindRide', {Route}, options);
     }
 }

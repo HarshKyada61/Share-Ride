@@ -20,6 +20,8 @@
   </button>
 </div>
 <div id="map"></div>
+
+
 <div class="details card" *ngIf="Distance">
   <div class="card-header bg-warning text-center">
     <h4>Details</h4>
@@ -29,15 +31,18 @@
     <h5>Duration: {{ Duration }}</h5>
     <h5>Total Fare: {{ cost?.toFixed(2) + "Rs" }}</h5>
   </div>
-  <div class="card-footer" style="background: none;">
+  <div class="card-footer" style="background: none;" *ngIf="!searching">
     <button
       class="btn btn-primary m-2"
       data-bs-toggle="modal"
       data-bs-target="#vehicleModal"
     >
-      Make Ride
+      Offer Ride
     </button>
-    <button class="btn btn-warning m-2">Take Ride</button>
+    <button class="btn btn-warning m-2" (click)="takeRide()">Take Ride</button>
+  </div>
+  <div class="card-footer" style="background: none;" *ngIf="searching">
+    <div>Finding Ride....</div>
   </div>
 </div>
 
@@ -62,13 +67,13 @@
         ></button>
       </div>
       <form
-        (ngSubmit)="createRide(form)"
+        (ngSubmit)="offerRide(form)"
         #form="ngForm"
         *ngIf="vehicles?.length !== 0"
       >
         <div class="modal-body">
           <label for="vehicles">Select Your Vehicle: </label>
-          <select name="vehicles" id="vehicles" ngModel #selectedVehicle="ngModel">
+          <select name="vehicles" id="vehicles" ngModel #selectedVehicle="ngModel" required>
             <option
               *ngFor="let vehicle of vehicles; index as i"
               value="{{ i }}"
@@ -80,7 +85,7 @@
           <div *ngIf="selectedVehicle.value">
             <div *ngIf="vehicles[selectedVehicle.value].Type === '4-Wheeler'">
                 <label for="seats">Seats Available: </label>
-                <select name="seats" id="seats" ngModel #seatsSelected="ngModel">
+                <select name="seats" id="seats" ngModel #seatsSelected="ngModel" required>
                     <option *ngFor="let s of seats" value="{{s}}">{{s}}</option>
                 </select>
             </div>
@@ -99,6 +104,7 @@
             class="btn btn-primary"
             data-bs-dismiss="modal"
             *ngIf="vehicles?.length !== 0"
+            [disabled]="!form.valid"
           >
             Make Ride
           </button>

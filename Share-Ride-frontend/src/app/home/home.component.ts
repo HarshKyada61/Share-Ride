@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   map: any;
   el = document.createElement('div');
   seats = [1,2,3];
+  searching=false;
 
   constructor(
     public MapService: MapsService,
@@ -112,11 +113,12 @@ export class HomeComponent implements OnInit {
           cords: srcCords,
           place_name: res,
         };
+        if (this.destLocation) {
+          this.findRoute();
+        }
       }
     );
-    if (this.destLocation) {
-      this.findRoute();
-    }
+    
   }
 
   setDest(event: any) {
@@ -185,8 +187,6 @@ export class HomeComponent implements OnInit {
       destcords[1]
     ).subscribe((res: any) => {
       const data = res.routes[0];
-      console.log(data);
-
       this.Distance = data.distance / 1000;
       this.Duration = this.formateTime(data.duration / 60);
       this.findCost(data.distance / 1000, data.duration / 60);
@@ -248,7 +248,7 @@ export class HomeComponent implements OnInit {
   
 
   //create Ride
-  createRide(form:NgForm) {
+  offerRide(form:NgForm) {
 
     const index = form.value.vehicles
     const ride:{[key: string]: any} = {
@@ -263,10 +263,35 @@ export class HomeComponent implements OnInit {
       ride['AvailableSeats']=form.value.seats
     }
 
-    this.RideService.createRide(ride).subscribe({next:res => {
+    this.RideService.offerRide(ride).subscribe({next:res => {
       console.log('ride added')
       this.map.off('click', this.setdestMarker);
       this.map.off('click', this.setdestMarker);
+    },
+    error:e => console.log(e.message)
+    })
+  }
+
+  //Take Ride
+  takeRide(){
+    const ride:{[key: string]: any} = {
+      pickUpPoint: this.srcLocation?.cords,
+      DropPoint: this.destLocation?.cords, 
+      distance: this.Distance,
+      duration: this.Duration,
+      Route: this.route,
+      TotalFare: this.cost
+    }
+
+    this.RideService.takeRide(ride).subscribe({next:res => {
+      console.log('ride added')
+      this.map.off('click', this.setdestMarker);
+      this.map.off('click', this.setdestMarker);
+      this.RideService.findRide(this.route).subscribe({next:res => {
+        this.searching=true
+        console.log(res);
+      },error: e => console.log(e)
+      })
     },
     error:e => console.log(e.message)
     })
