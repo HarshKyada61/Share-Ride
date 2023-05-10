@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@ang
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Subject } from 'rxjs';
 import { MapsService } from 'src/app/services/maps.service';
+import { HomeService } from '../home.service';
 
 @Component({
   selector: 'app-location-input',
@@ -21,7 +22,7 @@ export class LocationInputComponent implements OnInit{
   id:string;
 
 
-  constructor(public MapService: MapsService,private elementRef: ElementRef){
+  constructor(public MapService: MapsService,private elementRef: ElementRef, public HomeService:HomeService){
     this.id = this.elementRef.nativeElement.getAttribute('id');
   }
 

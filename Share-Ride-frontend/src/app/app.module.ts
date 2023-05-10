@@ -15,6 +15,8 @@ import {  ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { PageNOtFoundComponent } from './page-not-found/page-not-found.component';
+import { RouteDetailsComponent } from './home/route-details/route-details.component';
+import { RidesComponent } from './home/rides/rides.component';
 
 
 
@@ -29,6 +31,8 @@ import { PageNOtFoundComponent } from './page-not-found/page-not-found.component
     VehiclesComponent,
     ResetPasswordComponent,
     PageNOtFoundComponent,
+    RouteDetailsComponent,
+    RidesComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,16 @@
+<div class="details card" *ngIf="HomeService.matchedRides">
+    <div *ngIf="HomeService.matchedRides.length !== 0">
+            <h4>Available Rides</h4>
+        <div class="card-body">
+            <div class="card my-2 p-1" *ngFor="let matchedRide of HomeService.matchedRides">
+                Driver: {{matchedRide.Driver}} <br>
+                Vehicle: {{matchedRide.Vehicle}} <br>
+                VehicleNo: {{matchedRide.VehicleNo}} <br>
+                <button class="btn btn-warning">Send Request</button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="HomeService.matchedRides.length === 0">
+        No Rides Found
+    </div>
+</div>

@@ -6,6 +6,7 @@ import { VehiclesService } from '../services/vehicles.service';
 import { ToastrService } from 'ngx-toastr';
 import { RideService } from '../services/rides.service';
 import { NgForm } from '@angular/forms';
+import { HomeService } from './home.service';
 
 @Component({
   selector: 'app-home',
@@ -15,13 +16,13 @@ import { NgForm } from '@angular/forms';
 export class HomeComponent implements OnInit {
   map: any;
   el = document.createElement('div');
-  seats = [1,2,3];
+  
   searching=false;
 
   constructor(
     public MapService: MapsService,
     public Vehicleservice: VehiclesService,
-    private toastr: ToastrService,
+    public HomeService: HomeService,
     private RideService: RideService
   ) {
     (mapboxgl as typeof mapboxgl).accessToken =
@@ -33,25 +34,21 @@ export class HomeComponent implements OnInit {
   sourceMarker = new mapboxgl.Marker({ color: 'red' });
   destMarker = new mapboxgl.Marker({ color: 'true' });
 
-  srcLocation:
-    | {
-        cords: LngLatLike;
-        place_name: string;
-      }
-    | undefined;
+  // srcLocation:
+  //   | {
+  //       cords: LngLatLike;
+  //       place_name: string;
+  //     }
+  //   | undefined;
 
-  destLocation:
-    | {
-        cords: LngLatLike;
-        place_name: string;
-      }
-    | undefined;
-  route: Number[][] | undefined;
-  vehicles:{VehicleNo:string, _id:string, Type:string}[] = []
-
-  Distance: number | undefined;
-  Duration: string | undefined;
-  cost: number | undefined;
+  // destLocation:
+  //   | {
+  //       cords: LngLatLike;
+  //       place_name: string;
+  //     }
+  //   | undefined;
+  
+  
 
   ngOnInit() {
     this.map = new mapboxgl.Map({
@@ -66,7 +63,7 @@ export class HomeComponent implements OnInit {
     this.getCurrentLocation();
 
     this.Vehicleservice.getVehicles().subscribe((vehicles:any) => {
-      this.vehicles = vehicles
+      this.HomeService.vehicles = vehicles
     })
   }
 
@@ -94,12 +91,12 @@ export class HomeComponent implements OnInit {
 
   //input form user
   setSrc(event: any) {
-    this.srcLocation = {
+    this.HomeService.srcLocation = {
       cords: event.geometry.coordinates,
       place_name: event.place_name,
     };
-    this.putMarker(this.srcLocation.cords, this.sourceMarker);
-    if (this.destLocation) {
+    this.putMarker(this.HomeService.srcLocation.cords, this.sourceMarker);
+    if (this.HomeService.destLocation) {
       this.findRoute();
     }
   }
@@ -109,11 +106,11 @@ export class HomeComponent implements OnInit {
     this.putMarker(srcCords, this.sourceMarker);
     this.MapService.searchPlaceWithLatLon(srcCords[0], srcCords[1]).subscribe(
       (res: string) => {
-        this.srcLocation = {
+        this.HomeService.srcLocation = {
           cords: srcCords,
           place_name: res,
         };
-        if (this.destLocation) {
+        if (this.HomeService.destLocation) {
           this.findRoute();
         }
       }
@@ -122,12 +119,12 @@ export class HomeComponent implements OnInit {
   }
 
   setDest(event: any) {
-    this.destLocation = {
+    this.HomeService.destLocation = {
       cords: event.geometry.coordinates,
       place_name: event.place_name,
     };
-    this.putMarker(this.destLocation.cords, this.destMarker);
-    if (this.srcLocation) {
+    this.putMarker(this.HomeService.destLocation.cords, this.destMarker);
+    if (this.HomeService.srcLocation) {
       this.findRoute();
     }
   }
@@ -138,11 +135,11 @@ export class HomeComponent implements OnInit {
     this.sourceMarker.setLngLat(e.lngLat).addTo(this.map);
     this.MapService.searchPlaceWithLatLon(e.lngLat.lng, e.lngLat.lat).subscribe(
       (res: string) => {
-        this.srcLocation = {
+        this.HomeService.srcLocation = {
           cords: [e.lngLat.lng, e.lngLat.lat],
           place_name: res,
         };
-        if (this.destLocation) {
+        if (this.HomeService.destLocation) {
           this.findRoute();
         }
       }
@@ -153,11 +150,11 @@ export class HomeComponent implements OnInit {
     this.destMarker.setLngLat(e.lngLat).addTo(this.map);
     this.MapService.searchPlaceWithLatLon(e.lngLat.lng, e.lngLat.lat).subscribe(
       (res: string) => {
-        this.destLocation = {
+        this.HomeService.destLocation = {
           cords: [e.lngLat.lng, e.lngLat.lat],
           place_name: res,
         };
-        if (this.srcLocation) {
+        if (this.HomeService.srcLocation) {
           this.findRoute();
         }
       }
@@ -177,8 +174,8 @@ export class HomeComponent implements OnInit {
 
   //findRoute
   findRoute() {
-    const srccords: any = this.srcLocation?.cords;
-    const destcords: any = this.destLocation?.cords;
+    const srccords: any = this.HomeService.srcLocation?.cords;
+    const destcords: any = this.HomeService.destLocation?.cords;
 
     this.MapService.searchRoute(
       srccords[0],
@@ -187,11 +184,11 @@ export class HomeComponent implements OnInit {
       destcords[1]
     ).subscribe((res: any) => {
       const data = res.routes[0];
-      this.Distance = data.distance / 1000;
-      this.Duration = this.formateTime(data.duration / 60);
+      this.HomeService.Distance = data.distance / 1000;
+      this.HomeService.Duration = this.formateTime(data.duration / 60);
       this.findCost(data.distance / 1000, data.duration / 60);
       const route = data.geometry.coordinates;
-      this.route = route
+      this.HomeService.route = route
 
       const geojson = {
         type: 'Feature',
@@ -242,58 +239,12 @@ export class HomeComponent implements OnInit {
 
   // findCost
   findCost(distance: number, time: number) {
-    this.cost = distance * 4 + time * 3;
+    this.HomeService.cost = distance * 4 + time * 3;
   }
 
-  
-
-  //create Ride
-  offerRide(form:NgForm) {
-
-    const index = form.value.vehicles
-    const ride:{[key: string]: any} = {
-      StartPoint: this.srcLocation?.cords,
-      EndPoint: this.destLocation?.cords,
-      vehicle: this.vehicles[index]._id,
-      distance: this.Distance,
-      duration: this.Duration,
-      Route: this.route,
-    }
-    if(form.value.seats){
-      ride['AvailableSeats']=form.value.seats
-    }
-
-    this.RideService.offerRide(ride).subscribe({next:res => {
-      console.log('ride added')
-      this.map.off('click', this.setdestMarker);
-      this.map.off('click', this.setdestMarker);
-    },
-    error:e => console.log(e.message)
-    })
-  }
-
-  //Take Ride
-  takeRide(){
-    const ride:{[key: string]: any} = {
-      pickUpPoint: this.srcLocation?.cords,
-      DropPoint: this.destLocation?.cords, 
-      distance: this.Distance,
-      duration: this.Duration,
-      Route: this.route,
-      TotalFare: this.cost
-    }
-
-    this.RideService.takeRide(ride).subscribe({next:res => {
-      console.log('ride added')
-      this.map.off('click', this.setdestMarker);
-      this.map.off('click', this.setdestMarker);
-      this.RideService.findRide(this.route).subscribe({next:res => {
-        this.searching=true
-        console.log(res);
-      },error: e => console.log(e)
-      })
-    },
-    error:e => console.log(e.message)
-    })
+  //remove ClickListner from map
+  removeListner(){
+    this.map.off('click', this.setsrcMarker);
+    this.map.off('click', this.setdestMarker);
   }
 }

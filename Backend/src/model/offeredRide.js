@@ -16,7 +16,8 @@ const OfRideSchema = new mongoose.Schema({
     },
     vehicle: {
         type: mongoose.Schema.Types.ObjectId,
-        required:true
+        required:true,
+        ref:'Vehicle'
     },
     distance:{
         type:Number,

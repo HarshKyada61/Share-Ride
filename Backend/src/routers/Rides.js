@@ -20,39 +20,5 @@ router.post('/Share-Ride/TakeRide',auth, async(req, res) => {
     }
 })
 
-//Find matching Ride
-router.post('/Share-Ride/FindRide',auth, async(req, res) => {
-    const route = req.body.Route;
-    console.log(route);
-    try{
-        let Rides = await OfferedRide.find({Status:'waiting'})
-        let MatchedRides = [];
-        Rides.forEach((ride) => {
-            if(checkSubset(ride.Route,route)){
-                MatchedRides.push(ride)
-            }
-        })
-        // console.log(MatchedRides);
-        res.status(200).send(MatchedRides)
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(e.message)
-    }
-})
-
-let checkSubset = (parentArray, subsetArray) => {
-    const isSubset = subsetArray.every((el) => {
-        let pmatch=false
-        parentArray.forEach((pEl) => {
-            if(Math.abs(el[0] - pEl[0]) <= 0.0005 && Math.abs(el[0] - pEl[0]) <= 0.0005){
-                pmatch=true
-                return
-            }
-        })
-        return pmatch
-    })
-    return isSubset
-}
 
 export default router
