@@ -55,4 +55,17 @@ let checkSubset = (parentArray, subsetArray) => {
   return isSubset;
 };
 
+//get offeredrides of user
+router.get('/Share-Ride/offeredRides', auth, async(req,res) => {
+  const user = req.user._id;
+  try{
+      const rides = await OfferedRide.find({user:user}) 
+      res.status(200).send(rides)
+  }
+  catch(e){
+      console.log(e);
+      res.status(404).send({message:'No rides of user.'})
+  }
+})
+
 export default router;

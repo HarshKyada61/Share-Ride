@@ -13,6 +13,20 @@
 }
 
 .card-body{
-    max-height: 400px;
+    max-height: 270px;
     overflow: auto;
+}
+
+.card-footer{
+    border-top: none;
+}
+
+@media (max-width: 550px) {
+    .details{
+        bottom: 20px;
+        top: auto;
+        width: 90%;
+        left: auto;
+        right: auto;
+    }
 }

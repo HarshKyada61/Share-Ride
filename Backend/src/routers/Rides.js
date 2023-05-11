@@ -20,5 +20,34 @@ router.post('/Share-Ride/TakeRide',auth, async(req, res) => {
     }
 })
 
+//get rides of user
+router.get('/Share-Ride/GetRide', auth, async(req,res) => {
+    const user = req.user._id;
+    try{
+        const rides = await Ride.find({user:user}) 
+        res.status(200).send(rides)
+    }
+    catch(e){
+        console.log(e);
+        res.status(400).send(e.message)
+    }
+})
+
+//get CurrentRide of user
+router.get('/Share-Ride/currentRide', auth, async(req,res) => {
+    const user = req.user._id;
+    try{
+        let currentRide = await Ride.findOne({user:user,Status:'Searching'})
+        if(!currentRide){
+            currentRide = await OfferedRide.findOne({user:user,Status:'waiting'})
+        }
+
+        res.status(200).send(currentRide)
+    }
+    catch(e){
+        console.log(e);
+        res.status(400).send(e.message)
+    }
+})
 
 export default router

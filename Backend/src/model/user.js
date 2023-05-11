@@ -78,9 +78,6 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
-// userSchema.plugin(auditLog.plugin, {
-//     modelName: 'User',
-//   });
 
 userSchema.virtual('vehicles', {
     ref: 'Vehicle',

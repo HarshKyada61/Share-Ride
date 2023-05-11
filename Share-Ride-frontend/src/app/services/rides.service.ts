@@ -25,6 +25,21 @@ export class RideService{
       return this.http.post(this.URL + '/TakeRide', Ride, options);
     }
 
+    getCurrentRide(){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.get(this.URL + '/currentRide', options);
+    }
+
+    alltakenrides(){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.get(this.URL + '/GetRide', options);
+    }
+
+    allofferedRides(){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.get(this.URL + '/offeredRides', options);
+    }
+
     findRide(Route:any){
       const options = this.setHeaders(localStorage.getItem('token'));
       return this.http.post(this.URL + '/FindRide', {Route}, options);

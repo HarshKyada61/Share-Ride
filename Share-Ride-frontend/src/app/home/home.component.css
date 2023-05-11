@@ -16,3 +16,9 @@ select.ng-invalid.ng-touched {
     right: 40px;
     z-index: -1;
 }
+
+@media (max-width: 550px) {
+    .hide{
+        display: none;
+    }
+}

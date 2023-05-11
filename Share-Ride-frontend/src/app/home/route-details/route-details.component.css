@@ -18,6 +18,9 @@
     margin-top: 10px;
     border-radius: 10px;
 }
+.card-footer{
+    text-align:  center;
+}
 h5{
     background-color: #b6ebfa70;
     border-radius: 7px;
@@ -26,7 +29,9 @@ h5{
 
 @media (max-width: 550px) {
     .details{
-        top: 50%;
+        bottom:20px;
+        top: auto;
         width: 90%;
     }
+    
 }

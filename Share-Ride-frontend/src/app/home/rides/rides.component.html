@@ -10,7 +10,16 @@
             </div>
         </div>
     </div>
+    <div class="card-footer text-center" style="background: none;" *ngIf="HomeService.searchingRide" >
+        <button class="btn btn-danger " (click)="CancelRide()">Cancel Ride</button>
+    </div>
     <div *ngIf="HomeService.matchedRides.length === 0">
         No Rides Found
     </div>
+</div>
+
+<div class="card details" *ngIf="!HomeService.matchedRides">
+<div class="card-footer text-center" style="background: none;" *ngIf="HomeService.searchingRide" >
+    <button class="btn btn-danger " (click)="CancelRide()">Cancel Ride</button>
+</div>
 </div>

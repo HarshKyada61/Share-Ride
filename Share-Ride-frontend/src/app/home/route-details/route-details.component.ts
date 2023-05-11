@@ -10,6 +10,7 @@ import { RideService } from 'src/app/services/rides.service';
 })
 export class RouteDetailsComponent {
   @Output() removeListnerEvent = new EventEmitter()
+  @Output() hide  = new EventEmitter()
 
   constructor(public HomeService: HomeService, public RideService: RideService){}
 
@@ -40,6 +41,7 @@ export class RouteDetailsComponent {
       console.log('ride added')
       this.HomeService.searchingRide=true
       this.removeListnerEvent.emit();
+      this.hide.emit()
     },
     error:e => console.log(e.message)
     })
@@ -63,6 +65,7 @@ export class RouteDetailsComponent {
         this.HomeService.matchedRides= matchedRides
         this.HomeService.searchingRide = true,
         this.removeListnerEvent.emit();
+        this.hide.emit()
       },error: e => console.log(e)
       })
     },
@@ -70,9 +73,5 @@ export class RouteDetailsComponent {
     })
   }
 
-  //cancel Ride
-  CancelRide(){
-    this.HomeService.searchingRide= false;
-    this.HomeService.matchedRides= null
-  }
+  
 }

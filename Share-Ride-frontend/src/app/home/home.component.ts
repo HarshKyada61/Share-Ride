@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { LngLatLike } from 'mapbox-gl';
 import { MapsService } from '../services/maps.service';
@@ -22,8 +22,8 @@ export class HomeComponent implements OnInit {
   constructor(
     public MapService: MapsService,
     public Vehicleservice: VehiclesService,
+    public RideService:RideService,
     public HomeService: HomeService,
-    private RideService: RideService
   ) {
     (mapboxgl as typeof mapboxgl).accessToken =
       'pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ';
@@ -33,22 +33,6 @@ export class HomeComponent implements OnInit {
   curMarker = new mapboxgl.Marker({ element: this.el });
   sourceMarker = new mapboxgl.Marker({ color: 'red' });
   destMarker = new mapboxgl.Marker({ color: 'true' });
-
-  // srcLocation:
-  //   | {
-  //       cords: LngLatLike;
-  //       place_name: string;
-  //     }
-  //   | undefined;
-
-  // destLocation:
-  //   | {
-  //       cords: LngLatLike;
-  //       place_name: string;
-  //     }
-  //   | undefined;
-  
-  
 
   ngOnInit() {
     this.map = new mapboxgl.Map({
@@ -61,6 +45,11 @@ export class HomeComponent implements OnInit {
     this.el.innerHTML =
       '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:#09baf0;"></i>';
     this.getCurrentLocation();
+
+    this.RideService.getCurrentRide().subscribe(currentRide => {
+      console.log(currentRide);
+      
+    })
 
     this.Vehicleservice.getVehicles().subscribe((vehicles:any) => {
       this.HomeService.vehicles = vehicles
@@ -246,5 +235,15 @@ export class HomeComponent implements OnInit {
   removeListner(){
     this.map.off('click', this.setsrcMarker);
     this.map.off('click', this.setdestMarker);
+  }
+
+  //add hideclass
+  addHideClass(){
+    document.querySelector('app-route-details')?.classList.add('hide')
+  }
+
+  //removeHideClass
+  removeHideClass(){
+    document.querySelector('app-route-details')?.classList.remove('hide')
   }
 }
