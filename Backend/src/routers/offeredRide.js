@@ -10,7 +10,7 @@ router.post("/Share-Ride/MakeRide", auth, async (req, res) => {
   ride.user = req.user;
   try {
     await ride.save();
-    res.status(201).send();
+    res.status(201).send(ride._id);
   } catch (e) {
     console.log(e);
     res.status(400).send(e.message);
@@ -66,6 +66,22 @@ router.get('/Share-Ride/offeredRides', auth, async(req,res) => {
       console.log(e);
       res.status(404).send({message:'No rides of user.'})
   }
+})
+
+//updateRide
+router.patch('/Share-Ride/updateOfferedRide/:id',auth, async(req,res) => {
+  try{
+    const ride =  await OfferedRide.findById(req.params['id'])
+    const updates = Object.keys(req.body)
+        updates.forEach((update) => ride[update] = req.body[update]);
+        await ride.save()
+        res.status(200).send()
+        
+  }
+  catch(e){
+    console.log(e);
+    res.status(400).send(e.message)
+}
 })
 
 export default router;

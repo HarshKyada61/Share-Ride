@@ -29,5 +29,7 @@ export class HomeService{
   matchedRides:any
 
   searchingRide = false
+
+  ongoingRide = ''
   
 } 

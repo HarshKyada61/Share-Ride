@@ -26,8 +26,8 @@ export class RouteDetailsComponent {
 
     const index = form.value.vehicles
     const ride:{[key: string]: any} = {
-      StartPoint: this.HomeService.srcLocation?.cords,
-      EndPoint: this.HomeService.destLocation?.cords,
+      StartPoint: this.HomeService.srcLocation,
+      EndPoint: this.HomeService.destLocation,
       vehicle: this.HomeService.vehicles[index]._id,
       distance: this.HomeService.Distance,
       duration: this.HomeService.Duration,
@@ -37,11 +37,12 @@ export class RouteDetailsComponent {
       ride['AvailableSeats']=form.value.seats
     }
 
-    this.RideService.offerRide(ride).subscribe({next:res => {
+    this.RideService.offerRide(ride).subscribe({next:(res:any) => {
       console.log('ride added')
       this.HomeService.searchingRide=true
       this.removeListnerEvent.emit();
       this.hide.emit()
+      this.HomeService.ongoingRide = res
     },
     error:e => console.log(e.message)
     })
@@ -50,16 +51,17 @@ export class RouteDetailsComponent {
   //Take Ride
   takeRide(){
     const ride:{[key: string]: any} = {
-      pickUpPoint: this.HomeService.srcLocation?.cords,
-      DropPoint: this.HomeService.destLocation?.cords, 
+      pickUpPoint: this.HomeService.srcLocation,
+      DropPoint: this.HomeService.destLocation, 
       distance: this.HomeService.Distance,
       duration: this.HomeService.Duration,
       Route: this.HomeService.route,
       TotalFare: this.HomeService.cost
     }
 
-    this.RideService.takeRide(ride).subscribe({next:res => {
+    this.RideService.takeRide(ride).subscribe({next:(res:any) => {
       console.log('ride added')
+      this.HomeService.ongoingRide = res
       this.RideService.findRide(this.HomeService.route).subscribe({next:matchedRides => {
         console.log(matchedRides);
         this.HomeService.matchedRides= matchedRides

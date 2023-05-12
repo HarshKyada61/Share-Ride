@@ -16,14 +16,14 @@ import { HomeService } from './home.service';
 export class HomeComponent implements OnInit {
   map: any;
   el = document.createElement('div');
-  
-  searching=false;
+
+  searching = false;
 
   constructor(
     public MapService: MapsService,
     public Vehicleservice: VehiclesService,
-    public RideService:RideService,
-    public HomeService: HomeService,
+    public RideService: RideService,
+    public HomeService: HomeService
   ) {
     (mapboxgl as typeof mapboxgl).accessToken =
       'pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ';
@@ -35,10 +35,9 @@ export class HomeComponent implements OnInit {
   destMarker = new mapboxgl.Marker({ color: 'true' });
 
   ngOnInit() {
-    this.map = new mapboxgl.Map({
+    this.map =new mapboxgl.Map({
       container: 'map', // container ID
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      // starting position [lng, lat]
       zoom: 14, // starting zoom
       projection: { name: 'mercator' },
     });
@@ -46,14 +45,69 @@ export class HomeComponent implements OnInit {
       '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:#09baf0;"></i>';
     this.getCurrentLocation();
 
-    this.RideService.getCurrentRide().subscribe(currentRide => {
-      console.log(currentRide);
-      
-    })
+    this.Vehicleservice.getVehicles().subscribe((vehicles: any) => {
+      this.HomeService.vehicles = vehicles;
+    });
 
-    this.Vehicleservice.getVehicles().subscribe((vehicles:any) => {
-      this.HomeService.vehicles = vehicles
-    })
+    this.RideService.getCurrentRide().subscribe((currentRide: any) => {
+      if (currentRide) {
+        if (currentRide.Status === 'Searching') {
+          console.log('searching');
+          setTimeout(() => this.currentTakeride(currentRide), 1000)
+          
+        }
+        else if(currentRide.Status === 'waiting'){
+          console.log('waiting');
+          setTimeout(() => this.currentOfferedride(currentRide),1000)
+          
+        }
+      }
+    });
+  }
+
+  //add ongoing takeRide
+  async currentTakeride(currentRide: any) {
+    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.Distance = currentRide.distance;
+    this.HomeService.Duration = currentRide.duration;
+    this.HomeService.cost = currentRide.TotalFare;
+    this.HomeService.destLocation = currentRide.DropPoint;
+    this.HomeService.srcLocation = currentRide.pickUpPoint;
+    this.HomeService.route = currentRide.Route;
+
+    this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
+    this.putMarker(currentRide.DropPoint.cords, this.destMarker);
+    this.findRoute()
+    
+
+    this.RideService.findRide(this.HomeService.route).subscribe({
+      next: (matchedRides) => {
+        console.log(matchedRides);
+        this.HomeService.matchedRides = matchedRides;
+        this.HomeService.searchingRide = true;
+         this.removeListner();
+        this.addHideClass();
+      },
+      error: (e) => console.log(e),
+    });
+  }
+
+  //add ongoing takeRide
+  async currentOfferedride(currentRide: any) {
+    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.Distance = currentRide.distance;
+    this.HomeService.Duration = currentRide.duration;
+    this.HomeService.destLocation = currentRide.EndPoint;
+    this.HomeService.srcLocation = currentRide.StartPoint;
+    this.HomeService.route = currentRide.Route;
+
+    this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
+    this.putMarker(currentRide.EndPoint.cords, this.destMarker);
+    this.findRoute()
+
+    this.HomeService.searchingRide=true
+    this.removeListner();
+    setTimeout(() => this.addHideClass(), 500);
   }
 
   getCurrentLocation() {
@@ -104,7 +158,6 @@ export class HomeComponent implements OnInit {
         }
       }
     );
-    
   }
 
   setDest(event: any) {
@@ -163,10 +216,11 @@ export class HomeComponent implements OnInit {
 
   //findRoute
   findRoute() {
+    
     const srccords: any = this.HomeService.srcLocation?.cords;
     const destcords: any = this.HomeService.destLocation?.cords;
 
-    this.MapService.searchRoute(
+     this.MapService.searchRoute(
       srccords[0],
       srccords[1],
       destcords[0],
@@ -177,7 +231,7 @@ export class HomeComponent implements OnInit {
       this.HomeService.Duration = this.formateTime(data.duration / 60);
       this.findCost(data.distance / 1000, data.duration / 60);
       const route = data.geometry.coordinates;
-      this.HomeService.route = route
+      this.HomeService.route = route;
 
       const geojson = {
         type: 'Feature',
@@ -232,18 +286,20 @@ export class HomeComponent implements OnInit {
   }
 
   //remove ClickListner from map
-  removeListner(){
+  removeListner() {
     this.map.off('click', this.setsrcMarker);
     this.map.off('click', this.setdestMarker);
   }
 
   //add hideclass
-  addHideClass(){
-    document.querySelector('app-route-details')?.classList.add('hide')
+  addHideClass() {
+    const el = document.querySelector('app-route-details')
+    el?.classList.add('hide');
+    
   }
 
   //removeHideClass
-  removeHideClass(){
-    document.querySelector('app-route-details')?.classList.remove('hide')
+  removeHideClass() {
+    document.querySelector('app-route-details')?.classList.remove('hide');
   }
 }

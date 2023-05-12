@@ -12,7 +12,7 @@ router.post('/Share-Ride/TakeRide',auth, async(req, res) => {
     ride.user = req.user
     try{
         await ride.save();
-        res.status(201).send();
+        res.status(201).send(ride._id);
     }
     catch(e){
         console.log(e);
@@ -49,5 +49,21 @@ router.get('/Share-Ride/currentRide', auth, async(req,res) => {
         res.status(400).send(e.message)
     }
 })
+
+//updateRide
+router.patch('/Share-Ride/updateTakenRide/:id',auth, async(req,res) => {
+    try{
+      const ride =  await Ride.findById(req.params['id'])
+      const updates = Object.keys(req.body)
+          updates.forEach((update) => ride[update] = req.body[update]);
+          await ride.save()
+          res.status(200).send()
+          
+    }
+    catch(e){
+      console.log(e);
+      res.status(400).send(e.message)
+  }
+  })
 
 export default router

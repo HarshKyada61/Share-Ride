@@ -7,12 +7,24 @@ const OfRideSchema = new mongoose.Schema({
         ref:'User'
     },
     StartPoint: {
-        type: [Number],
-        required: true,
+        cords:{
+            type: [Number],
+            required: true,
+        },
+        place_name:{
+            type:String,
+            required: true
+        }
     },
     EndPoint: {
-        type: [Number],
-        required: true,
+        cords:{
+            type: [Number],
+            required: true,
+        },
+        place_name:{
+            type:String,
+            required: true
+        }
     },
     vehicle: {
         type: mongoose.Schema.Types.ObjectId,

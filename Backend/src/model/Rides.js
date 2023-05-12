@@ -6,13 +6,25 @@ const RideSchema = new mongoose.Schema({
         required:true,
         ref:'User'
     },
-    pickUpPoint: {
-        type: [Number],
-        required: true,
+    pickUpPoint: { 
+        cords:{
+            type: [Number],
+            required: true,
+        },
+        place_name:{
+            type:String,
+            required: true
+        }
     },
     DropPoint: {
-        type: [Number],
-        required: true,
+        cords:{
+            type: [Number],
+            required: true,
+        },
+        place_name:{
+            type:String,
+            required: true
+        }
     },
     distance:{
         type:Number,
