@@ -14,9 +14,6 @@ export class RouteDetailsComponent {
 
   constructor(public HomeService: HomeService, public RideService: RideService){}
 
-  Distance=this.HomeService.Distance;
-  Duration=this.HomeService.Duration;
-  cost=this.HomeService.cost;
   vehicles=this.HomeService.vehicles;
   seats = [1,2,3];
   

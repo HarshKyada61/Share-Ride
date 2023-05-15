@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { RideService } from '../services/rides.service';
 import { NgForm } from '@angular/forms';
 import { HomeService } from './home.service';
+import { RequestsService } from '../services/requests.service';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +24,8 @@ export class HomeComponent implements OnInit {
     public MapService: MapsService,
     public Vehicleservice: VehiclesService,
     public RideService: RideService,
-    public HomeService: HomeService
+    public HomeService: HomeService,
+    public RequestService: RequestsService
   ) {
     (mapboxgl as typeof mapboxgl).accessToken =
       'pk.eyJ1IjoiaGFyc2gta3lhZGEiLCJhIjoiY2xlNDNtaG43MDh1bTNuc2ExcWhnNDh6MCJ9.kfKxswm-yRFykKWzLMgegQ';
@@ -92,7 +94,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  //add ongoing takeRide
+  //add ongoing offeredRide
   async currentOfferedride(currentRide: any) {
     this.HomeService.ongoingRide= currentRide._id;
     this.HomeService.Distance = currentRide.distance;
@@ -100,6 +102,10 @@ export class HomeComponent implements OnInit {
     this.HomeService.destLocation = currentRide.EndPoint;
     this.HomeService.srcLocation = currentRide.StartPoint;
     this.HomeService.route = currentRide.Route;
+
+    this.RequestService.getRequests().subscribe(requests => {
+      this.HomeService.requests = requests
+    })
 
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.EndPoint.cords, this.destMarker);

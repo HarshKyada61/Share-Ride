@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { HomeService } from '../home.service';
 import { RideService } from 'src/app/services/rides.service';
+import { RequestsService } from 'src/app/services/requests.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-rides',
@@ -10,7 +12,7 @@ import { RideService } from 'src/app/services/rides.service';
 export class RidesComponent {
   @Output() show= new EventEmitter()
 
-  constructor(public HomeService: HomeService, public RideService: RideService){}
+  constructor(public HomeService: HomeService, public RideService: RideService, public RequestsService: RequestsService, public tostrService: ToastrService){}
   
   //cancel offered Ride
   CancelOfferedRide(){
@@ -26,5 +28,20 @@ export class RidesComponent {
     this.HomeService.matchedRides= null;
     this.RideService.updateTakenRide({Status:'cancelled'}, this.HomeService.ongoingRide).subscribe()
     this.show.emit()
+  }
+
+  //send Request
+  sendRequest(requestedRide:string){
+    this.RequestsService.sendRequest(this.HomeService.ongoingRide, requestedRide).subscribe({next:res => {
+      console.log(res);
+  },error: (e) => {
+    this.tostrService.error('This Ride is Full!!')
+  }})
+  }
+
+  //accept Request
+  acceptRequest(request:string){
+      this.RequestsService.updateRequest({Status:'Accepted'}, request).subscribe(() => console.log('Request Accepted')
+      )
   }
 }

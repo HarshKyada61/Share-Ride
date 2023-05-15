@@ -1,11 +1,11 @@
-<div class="details card" *ngIf="Distance">
+<div class="details card" *ngIf="this.HomeService.Distance">
     <div class="card-header bg-warning text-center">
       <h4>Details</h4>
     </div>
     <div class="card-body">
-      <h5>Distance: {{ this.HomeService.Distance?.toFixed(2) + "Km" }}</h5>
+      <h5>Distance: {{ this.HomeService.Distance.toFixed(2) + "Km" }}</h5>
       <h5>Duration: {{ this.HomeService.Duration }}</h5>
-      <h5>Total Fare: {{ cost?.toFixed(2) + "Rs" }}</h5>
+      <h5 *ngIf="!HomeService.requests">Total Fare: {{ this.HomeService.cost?.toFixed(2) + "Rs" }}</h5>
     </div>
     <div class="card-footer" style="background: none;" *ngIf="!HomeService.searchingRide" >
       <button

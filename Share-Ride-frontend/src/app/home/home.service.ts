@@ -28,6 +28,8 @@ export class HomeService{
 
   matchedRides:any
 
+  requests: any
+
   searchingRide = false
 
   ongoingRide = ''

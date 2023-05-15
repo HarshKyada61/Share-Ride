@@ -5,6 +5,7 @@ import userRouter from './routers/user.js'
 import vehiclerouter from './routers/vehicles.js'
 import offeredRideRoute from './routers/offeredRide.js'
 import ride from './routers/Rides.js'
+import requests from './routers/requests.js'
 
 
 
@@ -15,5 +16,6 @@ app.use(userRouter)
 app.use(vehiclerouter)
 app.use(offeredRideRoute)
 app.use(ride)
+app.use(requests)
 
 export default app
