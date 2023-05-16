@@ -21,9 +21,9 @@ export class RequestsService {
         return this.http.post(this.URL + '/send_request', {OwnRide, RequestedRide}, options);
     }
 
-    getRequests(){
+    getRequests(rideId:string){
         const options = this.setHeaders(localStorage.getItem('token'));
-        return this.http.get(this.URL + '/Show_Request', options);
+        return this.http.get(this.URL + '/Show_Request/'+rideId, options);
     }
 
     updateRequest(update:any,request:string){

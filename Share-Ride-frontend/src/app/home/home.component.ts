@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit {
     this.HomeService.srcLocation = currentRide.StartPoint;
     this.HomeService.route = currentRide.Route;
 
-    this.RequestService.getRequests().subscribe(requests => {
+    this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
       this.HomeService.requests = requests
     })
 

@@ -1,6 +1,7 @@
 import express from "express";
 import auth from "../middleware/auth.js";
 import OfferedRide from "../model/offeredRide.js";
+import Requests from "../model/Requests.js";
 
 const router = new express.Router();
 
@@ -28,7 +29,12 @@ router.post("/Share-Ride/FindRide", auth, async (req, res) => {
     let MatchedRides = [];
     Rides.forEach((ride) => {
       if (checkSubset(ride.Route, route)) {
-        MatchedRides.push({ id: ride._id , Driver: ride.user.Name, VehicleNo: ride.vehicle.VehicleNo, Vehicle: ride.vehicle.ModelName});
+        MatchedRides.push({
+          id: ride._id,
+          Driver: ride.user.Name,
+          VehicleNo: ride.vehicle.VehicleNo,
+          Vehicle: ride.vehicle.ModelName,
+        });
       }
     });
     res.status(200).send(MatchedRides);
@@ -56,32 +62,37 @@ let checkSubset = (parentArray, subsetArray) => {
 };
 
 //get offeredrides of user
-router.get('/Share-Ride/offeredRides', auth, async(req,res) => {
+router.get("/Share-Ride/offeredRides", auth, async (req, res) => {
   const user = req.user._id;
-  try{
-      const rides = await OfferedRide.find({user:user}) 
-      res.status(200).send(rides)
+  try {
+    const rides = await OfferedRide.find({ user: user });
+    res.status(200).send(rides);
+  } catch (e) {
+    console.log(e);
+    res.status(404).send({ message: "No rides of user." });
   }
-  catch(e){
-      console.log(e);
-      res.status(404).send({message:'No rides of user.'})
-  }
-})
+});
 
 //updateRide
-router.patch('/Share-Ride/updateOfferedRide/:id',auth, async(req,res) => {
-  try{
-    const ride =  await OfferedRide.findById(req.params['id'])
-    const updates = Object.keys(req.body)
-        updates.forEach((update) => ride[update] = req.body[update]);
-        await ride.save()
-        res.status(200).send()
-        
-  }
-  catch(e){
+router.patch("/Share-Ride/updateOfferedRide/:id", auth, async (req, res) => {
+  try {
+    const ride = await OfferedRide.findById(req.params["id"]);
+    const updates = Object.keys(req.body);
+    updates.forEach((update) => (ride[update] = req.body[update]));
+    await ride.save();
+
+    if(req.body.Status === 'cancelled'){
+      const requests = await Requests.find({RequestedRide:req.params["id"],Status:'Requested'}) 
+      requests.forEach(async (request) => {
+        request.Status = "Declined";
+        await request.save();
+      });
+    }
+    res.status(200).send();
+  } catch (e) {
     console.log(e);
-    res.status(400).send(e.message)
-}
-})
+    res.status(400).send(e.message);
+  }
+});
 
 export default router;
