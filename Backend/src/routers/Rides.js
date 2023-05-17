@@ -35,11 +35,11 @@ router.get("/Share-Ride/GetRide", auth, async (req, res) => {
 router.get("/Share-Ride/currentRide", auth, async (req, res) => {
   const user = req.user._id;
   try {
-    let currentRide = await Ride.findOne({ user: user, Status: "Searching" });
+    let currentRide = await Ride.findOne({ user: user, Status: {$nin:['cancelled','Completed']} });
     if (!currentRide) {
       currentRide = await OfferedRide.findOne({
         user: user,
-        Status: "waiting",
+        Status: {$nin:['cancelled','Completed']},
       });
     }
 

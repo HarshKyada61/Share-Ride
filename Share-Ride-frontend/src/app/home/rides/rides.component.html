@@ -6,7 +6,7 @@
                 Driver: {{matchedRide.Driver}} <br>
                 Vehicle: {{matchedRide.Vehicle}} <br>
                 VehicleNo: {{matchedRide.VehicleNo}} <br>
-                <button class="btn btn-warning"  (click)="sendRequest($event,matchedRide.id)">Send Request</button>
+                <button class="btn btn-warning"  (click)="sendRequest($event,matchedRide.id)" [disabled]="this.HomeService.requestedRides?.includes(matchedRide.id)">{{this.HomeService.requestedRides?.includes(matchedRide.id)?'Requested':'Send Request'}}</button>
             </div>
         </div>
     </div>
@@ -18,15 +18,15 @@
     </div>
 </div>
 
-<div class="card details" *ngIf="!HomeService.matchedRides">
-    <div *ngIf="HomeService.requests && HomeService.requests.length !== 0">
+<div class="card details" *ngIf="!HomeService.matchedRides && HomeService.requests">
+    <div *ngIf="HomeService.requests.length !== 0">
         <h4>Available Rides</h4>
     <div class="card-body">
-        <div class="card my-2 p-1" *ngFor="let request of HomeService.requests">
+        <div class="card my-2 p-1" *ngFor="let request of HomeService.requests, let i= index">
             Passenger: {{request.user.Name}} <br><br>
             Pickup: {{request.OwnRide.pickUpPoint.place_name}} <br><br>
             Drop: {{request.OwnRide.DropPoint.place_name}} <br>
-            <button class="btn btn-warning mb-1" (click)="acceptRequest(request._id)">Accept Request</button>
+            <button class="btn btn-warning mb-1" (click)="acceptRequest(request._id,i)">Accept Request</button>
             <button class="btn btn-warning" (click)="declineRequest(request._id)">Decline Request</button>
         </div>
     </div>
@@ -34,7 +34,7 @@
 <div class="card-footer text-center" style="background: none;"  >
     <button class="btn btn-danger " (click)="CancelOfferedRide()">Cancel Ride</button>
 </div>
-<div *ngIf="!HomeService.requests">
+<div *ngIf="!HomeService.requests || HomeService.requests.length === 0">
     No Requests Yet!
 </div>
 </div>

@@ -30,4 +30,9 @@ export class RequestsService {
         const options = this.setHeaders(localStorage.getItem('token'));
         return this.http.patch(this.URL + '/update_Request/' + request,update, options);
     }
+
+    sentRequests(rideId:string){
+        const options = this.setHeaders(localStorage.getItem('token'));
+        return this.http.get(this.URL + '/getRequest/'+rideId, options);
+    }
 }

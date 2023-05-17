@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
 
     this.RideService.getCurrentRide().subscribe((currentRide: any) => {
       if (currentRide) {
-        if (currentRide.Status === 'Searching') {
+        if (currentRide.Status === 'Searching' ) {
           console.log('searching');
           setTimeout(() => this.currentTakeride(currentRide), 1000)
           
@@ -62,6 +62,14 @@ export class HomeComponent implements OnInit {
           console.log('waiting');
           setTimeout(() => this.currentOfferedride(currentRide),1000)
           
+        }
+        else if(currentRide.Status === 'Booked'){
+          console.log('booked')
+          setTimeout(() => this.currentTakerideBooked(currentRide),1000)
+        }
+        else if(currentRide.Status === 'Full'){
+          console.log('full')
+          setTimeout(() => this.currentOfferedrideFull(currentRide),1000)
         }
       }
     });
@@ -84,7 +92,10 @@ export class HomeComponent implements OnInit {
 
     this.RideService.findRide(this.HomeService.route).subscribe({
       next: (matchedRides) => {
-        console.log(matchedRides);
+        this.RequestService.sentRequests(this.HomeService.ongoingRide).subscribe({next:(res) => {
+          this.HomeService.requestedRides= res
+          
+        },error: (e) => console.log(e.message)})
         this.HomeService.matchedRides = matchedRides;
         this.HomeService.searchingRide = true;
          this.removeListner();
@@ -92,6 +103,22 @@ export class HomeComponent implements OnInit {
       },
       error: (e) => console.log(e),
     });
+  }
+
+  //add ongoing takeRide after booked
+  async currentTakerideBooked(currentRide: any) {
+    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.Distance = currentRide.distance;
+    this.HomeService.Duration = currentRide.duration;
+    this.HomeService.cost = currentRide.TotalFare;
+    this.HomeService.destLocation = currentRide.DropPoint;
+    this.HomeService.srcLocation = currentRide.pickUpPoint;
+    this.HomeService.route = currentRide.Route;
+
+    this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
+    this.putMarker(currentRide.DropPoint.cords, this.destMarker);
+    this.findRoute()
+    
   }
 
   //add ongoing offeredRide
@@ -106,6 +133,24 @@ export class HomeComponent implements OnInit {
     this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
       this.HomeService.requests = requests
     })
+
+    this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
+    this.putMarker(currentRide.EndPoint.cords, this.destMarker);
+    this.findRoute()
+
+    this.HomeService.searchingRide=true
+    this.removeListner();
+    setTimeout(() => this.addHideClass(), 500);
+  }
+
+  ////add ongoing offeredRide after full
+  async currentOfferedrideFull(currentRide: any) {
+    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.Distance = currentRide.distance;
+    this.HomeService.Duration = currentRide.duration;
+    this.HomeService.destLocation = currentRide.EndPoint;
+    this.HomeService.srcLocation = currentRide.StartPoint;
+    this.HomeService.route = currentRide.Route;
 
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.EndPoint.cords, this.destMarker);

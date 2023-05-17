@@ -28,10 +28,14 @@ export class HomeService{
 
   matchedRides:any
 
+  requestedRides:any
+
   requests: any
 
   searchingRide = false
 
   ongoingRide = ''
+  
+  acceptedRides:any[]=[]
   
 } 

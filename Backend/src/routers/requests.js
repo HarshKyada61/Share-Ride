@@ -35,7 +35,26 @@ router.get("/Share-Ride/Show_Request/:id", auth, async (req, res) => {
       .populate("RequestedTo")
       .populate("OwnRide")
       .exec();
-    res.status(200).send(requests);
+    let filteredRequests = requests.filter((request) => request.OwnRide.Status === 'Searching')
+    res.status(200).send(filteredRequests);
+  } catch {
+    res.status(400).send(e.message);
+  }
+});
+
+
+//get all rides user has requested to
+router.get("/Share-Ride/getRequest/:id", auth, async (req, res) => {
+  try {
+    let requests = await Requests.find({
+      OwnRide: req.params["id"],
+      Status: "Requested",
+    })
+    let requestedTo = []
+    requests.forEach(request => {
+      requestedTo.push(request.RequestedRide)
+    })
+    res.status(200).send(requestedTo)
   } catch {
     res.status(400).send(e.message);
   }
