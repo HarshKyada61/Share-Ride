@@ -1,0 +1,35 @@
+.details{
+    position: absolute;
+    margin: 20px;
+    width: 320px;
+    bottom :1%;
+    padding: 20px;
+    background-color: #8de5fd;
+    font-family: sans-serif;
+    z-index: -1;
+    border: solid 1px;
+    border-radius: 10px;
+}
+
+.card-body{
+    background-color: #fff;
+    margin-top: 10px;
+    border-radius: 10px;
+    max-height: 150px;
+    overflow: auto;
+    
+}
+.card-footer{
+    text-align:  center;
+    margin-bottom: 0;
+}
+
+@media (max-width: 550px) {
+    .details{
+        bottom: 20px;
+        top: auto;
+        width: 90%;
+        left: auto;
+        right: auto;
+    }
+}

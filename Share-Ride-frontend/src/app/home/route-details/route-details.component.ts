@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { HomeService } from '../home.service';
 import { NgForm } from '@angular/forms';
 import { RideService } from 'src/app/services/rides.service';
+import { RequestsService } from 'src/app/services/requests.service';
 
 @Component({
   selector: 'app-route-details',
@@ -12,7 +13,7 @@ export class RouteDetailsComponent {
   @Output() removeListnerEvent = new EventEmitter()
   @Output() hide  = new EventEmitter()
 
-  constructor(public HomeService: HomeService, public RideService: RideService){}
+  constructor(public HomeService: HomeService, public RideService: RideService, public RequestService: RequestsService){}
 
   vehicles=this.HomeService.vehicles;
   seats = [1,2,3];
@@ -40,6 +41,9 @@ export class RouteDetailsComponent {
       this.removeListnerEvent.emit();
       this.hide.emit()
       this.HomeService.ongoingRide = res
+      this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
+        this.HomeService.requests = requests
+      })
     },
     error:e => console.log(e.message)
     })

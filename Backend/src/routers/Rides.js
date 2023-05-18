@@ -72,4 +72,15 @@ router.patch("/Share-Ride/updateTakenRide/:id", auth, async (req, res) => {
   }
 });
 
+//get All rides to pickup
+router.get("/Share-Ride/ridesToPickup/:id", auth, async (req, res) => {
+  try{
+    const rides = await Ride.find({OfferedRide:req.params["id"], Status:'Booked'}).populate('user')
+    res.status(200).send(rides)
+  }catch(e){
+    console.log(e);
+    res.status(400).send(e.message);
+  }
+})
+
 export default router;

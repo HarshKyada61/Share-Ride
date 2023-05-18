@@ -17,6 +17,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
 import { PageNOtFoundComponent } from './page-not-found/page-not-found.component';
 import { RouteDetailsComponent } from './home/route-details/route-details.component';
 import { RidesComponent } from './home/rides/rides.component';
+import { RideDetailsComponent } from './home/ride-details/ride-details.component';
 
 
 
@@ -33,6 +34,7 @@ import { RidesComponent } from './home/rides/rides.component';
     PageNOtFoundComponent,
     RouteDetailsComponent,
     RidesComponent,
+    RideDetailsComponent,
   ],
   imports: [
     BrowserModule,

@@ -95,4 +95,17 @@ router.patch("/Share-Ride/updateOfferedRide/:id", auth, async (req, res) => {
   }
 });
 
+router.get('/Share-Ride/findRideByID/:id', auth, async (req, res) => {
+  try{
+    const ride = await OfferedRide.findById(req.params["id"])
+    .populate("vehicle")
+    .populate("user")
+    .exec();
+    res.status(200).send(ride)
+  }catch(e){
+    console.log(e);
+    res.status(400).send(e.message);
+  }
+})
+
 export default router;

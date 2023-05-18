@@ -26,16 +26,18 @@ export class HomeService{
     | undefined;
   route: Number[][] | undefined;
 
-  matchedRides:any
-
-  requestedRides:any
-
-  requests: any
-
   searchingRide = false
 
   ongoingRide = ''
+
+  matchedRides:any
   
+  requests: any
+
+  requestedRides:any
+
+  ridetoTake:any
+
   acceptedRides:any[]=[]
-  
+
 } 

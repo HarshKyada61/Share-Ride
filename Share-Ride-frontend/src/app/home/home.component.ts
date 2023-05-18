@@ -114,10 +114,20 @@ export class HomeComponent implements OnInit {
     this.HomeService.destLocation = currentRide.DropPoint;
     this.HomeService.srcLocation = currentRide.pickUpPoint;
     this.HomeService.route = currentRide.Route;
+    this.HomeService.searchingRide = true;
+   
 
     this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.DropPoint.cords, this.destMarker);
     this.findRoute()
+    
+    this.removeListner();
+    
+
+      this.RideService.rideTotake(currentRide.OfferedRide).subscribe(ride => {
+        this.HomeService.ridetoTake = ride;
+        this.addHideClass();
+      })
     
   }
 
@@ -132,6 +142,12 @@ export class HomeComponent implements OnInit {
 
     this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
       this.HomeService.requests = requests
+    })
+
+    this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe(rides => {
+      this.HomeService.acceptedRides = rides as []
+      console.log(this.HomeService.acceptedRides);
+      
     })
 
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
@@ -155,6 +171,12 @@ export class HomeComponent implements OnInit {
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.EndPoint.cords, this.destMarker);
     this.findRoute()
+
+    this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe((rides:any) => {
+      this.HomeService.acceptedRides = rides 
+      console.log(this.HomeService.acceptedRides);
+      
+    })
 
     this.HomeService.searchingRide=true
     this.removeListner();
@@ -344,7 +366,7 @@ export class HomeComponent implements OnInit {
 
   //add hideclass
   addHideClass() {
-    const el = document.querySelector('app-route-details')
+    const el = document.querySelector('app-route-details')    
     el?.classList.add('hide');
     
   }

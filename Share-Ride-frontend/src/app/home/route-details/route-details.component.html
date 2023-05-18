@@ -5,7 +5,7 @@
     <div class="card-body">
       <h5>Distance: {{ this.HomeService.Distance.toFixed(2) + "Km" }}</h5>
       <h5>Duration: {{ this.HomeService.Duration }}</h5>
-      <h5 *ngIf="!HomeService.requests">Total Fare: {{ this.HomeService.cost?.toFixed(2) + "Rs" }}</h5>
+      <h5 *ngIf="HomeService.matchedRides || HomeService.ridetoTake || HomeService.searchingRide === false">Total Fare: {{ this.HomeService.cost?.toFixed(2) + "Rs" }}</h5>
     </div>
     <div class="card-footer" style="background: none;" *ngIf="!HomeService.searchingRide" >
       <button

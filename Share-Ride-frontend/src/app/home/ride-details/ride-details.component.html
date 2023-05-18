@@ -1,0 +1,23 @@
+<div class="details card" *ngIf="HomeService.ridetoTake">
+
+      <div class="card-body">
+        Driver:{{HomeService.ridetoTake.user.Name}} <br />
+        Vehicle: {{HomeService.ridetoTake.vehicle.ModelName}}<br />
+        VehicleNo: {{HomeService.ridetoTake.vehicle.VehicleNo}} <br />
+      </div>
+      <div class="card-footer" style="background: none;" >
+        <button class="btn btn-danger mt-2" (click)="CanceltakenRide()">Cancel Ride</button>
+      </div>
+
+</div>
+
+<div class="details card" *ngIf="HomeService.acceptedRides.length !== 0">
+    <div class="card-body" *ngFor="let ride of HomeService.acceptedRides">
+        <h6>Name:{{ride.user.Name}}</h6> 
+        <h6>PickUp: {{ride.pickUpPoint.place_name}} </h6>
+        <h6>Drop:{{ride.DropPoint.place_name}} </h6>
+    </div>
+    <div class="card-footer" style="background: none;" >
+        <button class="btn btn-danger mt-2" (click)="CancelOfferedRide()">Cancel Ride</button>
+      </div>
+</div>

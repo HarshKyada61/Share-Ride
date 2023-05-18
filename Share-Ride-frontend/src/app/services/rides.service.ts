@@ -54,4 +54,14 @@ export class RideService{
       const options = this.setHeaders(localStorage.getItem('token'));
       return this.http.patch(this.URL + '/updateTakenRide/'+rideId, updates, options);
     }
+
+    rideTotake(rideId:string){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.get(this.URL + '/findRideByID/'+rideId, options);
+    }
+
+    ridesToPickup(rideId:string){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.get(this.URL + '/ridesToPickup/'+rideId, options);
+    }
 }
