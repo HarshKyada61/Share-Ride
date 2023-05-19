@@ -23,4 +23,4 @@
 
 <app-route-details *ngIf="HomeService.Distance" (removeListnerEvent)="removeListner()" (hide)="addHideClass()"></app-route-details>
 <app-rides  *ngIf="HomeService.searchingRide" (show)="removeHideClass()"></app-rides>
-<app-ride-details *ngIf="HomeService.ridetoTake || HomeService.acceptedRides.length !== 0" (show)="removeHideClass()"></app-ride-details>
+<app-ride-details *ngIf="HomeService.ridetoTake || HomeService.acceptedRides.length !== 0" (show)="removeHideClass()" (ShowPickupDrop)="ShowPickupDrop($event)"></app-ride-details>

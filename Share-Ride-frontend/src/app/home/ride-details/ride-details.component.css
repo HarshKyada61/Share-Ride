@@ -11,13 +11,15 @@
     border-radius: 10px;
 }
 
+.card{
+    max-height: 200px;
+    overflow: auto;
+}
+
 .card-body{
     background-color: #fff;
     margin-top: 10px;
     border-radius: 10px;
-    max-height: 150px;
-    overflow: auto;
-    
 }
 .card-footer{
     text-align:  center;

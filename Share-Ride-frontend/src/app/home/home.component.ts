@@ -17,6 +17,8 @@ import { RequestsService } from '../services/requests.service';
 export class HomeComponent implements OnInit {
   map: any;
   el = document.createElement('div');
+  el1 = document.createElement('div');
+  el2 = document.createElement('div');
 
   searching = false;
 
@@ -34,7 +36,9 @@ export class HomeComponent implements OnInit {
   curLocation?: LngLatLike;
   curMarker = new mapboxgl.Marker({ element: this.el });
   sourceMarker = new mapboxgl.Marker({ color: 'red' });
-  destMarker = new mapboxgl.Marker({ color: 'true' });
+  destMarker = new mapboxgl.Marker({ color: 'black' });
+  PickUpMarker = new mapboxgl.Marker({ element: this.el1, anchor:'bottom'});
+  DropMarker = new mapboxgl.Marker({ element:this.el2, anchor:'bottom' });
 
   ngOnInit() {
     this.map =new mapboxgl.Map({
@@ -45,6 +49,8 @@ export class HomeComponent implements OnInit {
     });
     this.el.innerHTML =
       '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:#09baf0;"></i>';
+      this.el1.innerHTML = '<i class="fa-solid fa-map-pin fa-2x" style="color:green;"></i>' 
+    this.el2.innerHTML = '<i class="fa-solid fa-map-pin fa-2x" style="color:black;"></i>' 
     this.getCurrentLocation();
 
     this.Vehicleservice.getVehicles().subscribe((vehicles: any) => {
@@ -174,8 +180,6 @@ export class HomeComponent implements OnInit {
 
     this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe((rides:any) => {
       this.HomeService.acceptedRides = rides 
-      console.log(this.HomeService.acceptedRides);
-      
     })
 
     this.HomeService.searchingRide=true
@@ -374,5 +378,12 @@ export class HomeComponent implements OnInit {
   //removeHideClass
   removeHideClass() {
     document.querySelector('app-route-details')?.classList.remove('hide');
+  }
+
+  //showPickup and drop of rider
+  ShowPickupDrop(ride:any){
+    
+    this.putMarker(ride.pickUp.cords, this.PickUpMarker)
+    this.putMarker(ride.drop.cords, this.DropMarker)
   }
 }

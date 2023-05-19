@@ -10,12 +10,10 @@ import { RideService } from 'src/app/services/rides.service';
 export class RideDetailsComponent implements OnInit {
 
   @Output() show  = new EventEmitter()
+  @Output() ShowPickupDrop = new EventEmitter<any>()
 
   constructor(public HomeService: HomeService, public RideService: RideService){}
   ngOnInit(): void {
-
-    console.log(this.HomeService.acceptedRides);
-    
   }
 
   CanceltakenRide() {
@@ -37,5 +35,9 @@ export class RideDetailsComponent implements OnInit {
     ).subscribe();
     this.HomeService.acceptedRides = [];
     this.show.emit();
+  }
+
+  onclick(ride:any){
+    this.ShowPickupDrop.emit({id:ride._id, pickUp:ride.pickUpPoint, drop: ride.DropPoint})
   }
 }

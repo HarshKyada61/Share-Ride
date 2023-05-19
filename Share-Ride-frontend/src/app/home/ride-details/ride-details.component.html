@@ -12,7 +12,7 @@
 </div>
 
 <div class="details card" *ngIf="HomeService.acceptedRides.length !== 0">
-    <div class="card-body" *ngFor="let ride of HomeService.acceptedRides">
+    <div class="card-body" *ngFor="let ride of HomeService.acceptedRides" (click)="onclick(ride)">
         <h6>Name:{{ride.user.Name}}</h6> 
         <h6>PickUp: {{ride.pickUpPoint.place_name}} </h6>
         <h6>Drop:{{ride.DropPoint.place_name}} </h6>
