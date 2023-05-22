@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { HomeService } from '../home.service';
 import { RideService } from 'src/app/services/rides.service';
+import { NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-ride-details',
@@ -12,7 +14,7 @@ export class RideDetailsComponent implements OnInit {
   @Output() show  = new EventEmitter()
   @Output() ShowPickupDrop = new EventEmitter<any>()
 
-  constructor(public HomeService: HomeService, public RideService: RideService){}
+  constructor(public HomeService: HomeService, public RideService: RideService, private toastr: ToastrService){}
   ngOnInit(): void {
   }
 
@@ -39,5 +41,14 @@ export class RideDetailsComponent implements OnInit {
 
   onclick(ride:any){
     this.ShowPickupDrop.emit({id:ride._id, pickUp:ride.pickUpPoint, drop: ride.DropPoint})
+  }
+
+  submitOTP(form:NgForm,ride_ID:string){
+    console.log(form.value.otp);
+    this.RideService.validateOTP(ride_ID,form.value.otp).subscribe({next: () => {
+      this.toastr.success('OTP Verified Successfully')
+    }, error: (e) => {
+      this.toastr.error(e.message)
+    } })
   }
 }

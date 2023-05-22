@@ -64,4 +64,9 @@ export class RideService{
       const options = this.setHeaders(localStorage.getItem('token'));
       return this.http.get(this.URL + '/ridesToPickup/'+rideId, options);
     }
+
+    validateOTP(rideID:string, otp:number){
+      const options = this.setHeaders(localStorage.getItem('token'));
+      return this.http.post(this.URL + '/validateOTP',{ride:rideID, enteredOTP:otp}, options);
+    }
 }

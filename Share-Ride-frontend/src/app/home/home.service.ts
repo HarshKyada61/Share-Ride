@@ -40,4 +40,5 @@ export class HomeService{
 
   acceptedRides:any[]=[]
 
+  OTP: number | undefined
 } 

@@ -3,6 +3,7 @@ import auth from "../middleware/auth.js";
 import Requests from "../model/Requests.js";
 import OfferedRide from "../model/offeredRide.js";
 import Ride from "../model/Rides.js";
+import nodemailer from 'nodemailer';
 
 const router = new express.Router();
 
@@ -69,13 +70,16 @@ router.patch("/Share-Ride/update_Request/:id", auth, async (req, res) => {
           
 
     if (req.body.Status === "Accepted") {
-      const ride = await Ride.findById(request.OwnRide);
+      const ride = await Ride.findById(request.OwnRide).populate('user');
       if (ride.Status !== "Searching") {
         throw new Error("This Ride is not available");
       }
       ride.OfferedRide = request.RequestedRide;
       ride.Status = "Booked";
+      ride.OTP = Math.floor(Math.random() * 10000);
       await ride.save();
+
+      sendMail(ride.user.Email, ride.OTP)
 
       await request.save()
 
@@ -105,5 +109,29 @@ router.patch("/Share-Ride/update_Request/:id", auth, async (req, res) => {
     res.status(400).send(e.message);
   }
 });
+
+
+const sendMail = async (email,OTP) => {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
+      }
+  });
+
+  let message= {
+    to: email,
+          subject: 'Your OTP for Next Ride',
+          html: `<p>Your OTP For Next Ride is ${OTP}</p>`
+  }
+ 
+
+  const info = await transporter.sendMail(message).catch((e) => {
+      console.log(e);
+    });
+
+}
 
 export default router;

@@ -46,6 +46,9 @@ const RideSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'OfferedRide'
     },
+    OTP:{
+        type: Number
+    },
     TotalFare:{
         type: Number,
         required: true

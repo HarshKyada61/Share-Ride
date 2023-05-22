@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit {
           setTimeout(() => this.currentOfferedride(currentRide),1000)
           
         }
-        else if(currentRide.Status === 'Booked'){
+        else if(currentRide.Status === 'Booked' || currentRide.Status === 'Started'){
           console.log('booked')
           setTimeout(() => this.currentTakerideBooked(currentRide),1000)
         }
@@ -121,6 +121,7 @@ export class HomeComponent implements OnInit {
     this.HomeService.srcLocation = currentRide.pickUpPoint;
     this.HomeService.route = currentRide.Route;
     this.HomeService.searchingRide = true;
+    this.HomeService.OTP = currentRide.OTP
    
 
     this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);

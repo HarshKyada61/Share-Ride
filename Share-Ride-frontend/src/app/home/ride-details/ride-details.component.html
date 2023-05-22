@@ -1,23 +1,96 @@
 <div class="details card" *ngIf="HomeService.ridetoTake">
-
-      <div class="card-body">
-        Driver:{{HomeService.ridetoTake.user.Name}} <br />
-        Vehicle: {{HomeService.ridetoTake.vehicle.ModelName}}<br />
-        VehicleNo: {{HomeService.ridetoTake.vehicle.VehicleNo}} <br />
-      </div>
-      <div class="card-footer" style="background: none;" >
-        <button class="btn btn-danger mt-2" (click)="CanceltakenRide()">Cancel Ride</button>
-      </div>
-
+  <div class="card-body">
+    Driver:{{ HomeService.ridetoTake.user.Name }} <br />
+    Vehicle: {{ HomeService.ridetoTake.vehicle.ModelName }}<br />
+    VehicleNo: {{ HomeService.ridetoTake.vehicle.VehicleNo }} <br />
+    <p *ngIf="HomeService.OTP"> OTP: {{ HomeService.OTP }}</p> 
+  </div>
+  <div class="card-footer" style="background: none">
+    <button class="btn btn-danger mt-2" (click)="CanceltakenRide()">
+      Cancel Ride
+    </button>
+  </div>
 </div>
 
 <div class="details card" *ngIf="HomeService.acceptedRides.length !== 0">
-    <div class="card-body" *ngFor="let ride of HomeService.acceptedRides" (click)="onclick(ride)">
-        <h6>Name:{{ride.user.Name}}</h6> 
-        <h6>PickUp: {{ride.pickUpPoint.place_name}} </h6>
-        <h6>Drop:{{ride.DropPoint.place_name}} </h6>
-    </div>
-    <div class="card-footer" style="background: none;" >
-        <button class="btn btn-danger mt-2" (click)="CancelOfferedRide()">Cancel Ride</button>
+  <div
+    class="card-body"
+    *ngFor="let ride of HomeService.acceptedRides"
+    (click)="onclick(ride)"
+  >
+    <h6>Name:{{ ride.user.Name }}</h6>
+    <h6>PickUp: {{ ride.pickUpPoint.place_name }}</h6>
+    <h6>Drop:{{ ride.DropPoint.place_name }}</h6>
+    <button
+      class="btn btn-warning mt-2"
+      style="float: right"
+      data-bs-toggle="modal"
+      data-bs-target="#OTPModal"
+      *ngIf="ride.Status === 'Booked'"
+    >
+      Enter OTP
+    </button>
+    <button
+    class="btn btn-warning mt-2"
+    style="float: right"
+    *ngIf="ride.Status === 'Started'"
+  >
+    End Ride
+  </button>
+
+    <div class="modal fade" tabindex="-1" id="OTPModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Enter OTP</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form #form="ngForm">
+            <div class="modal-body">
+              <input
+                type="text"
+                name="otp"
+                minlength="4"
+                maxlength="4"
+                required
+                ngModel
+                #otp="ngModel"
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="submitOTP(form,ride._id)"
+                [disabled]="!otp.valid"
+                data-bs-dismiss="modal"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+    </div>
+
+  </div>
+
+  <div class="card-footer" style="background: none">
+    <button class="btn btn-danger mt-2" (click)="CancelOfferedRide()">
+      Cancel Ride
+    </button>
+  </div>
 </div>
+
