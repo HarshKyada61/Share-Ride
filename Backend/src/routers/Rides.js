@@ -75,7 +75,7 @@ router.patch("/Share-Ride/updateTakenRide/:id", auth, async (req, res) => {
 //get All rides to pickup
 router.get("/Share-Ride/ridesToPickup/:id", auth, async (req, res) => {
   try{
-    const rides = await Ride.find({OfferedRide:req.params["id"], Status:{$in:['Started','Booked']}}).populate('user')
+    const rides = await Ride.find({OfferedRide:req.params["id"], Status:{$in:['Started','Booked', 'RequestedToEnd']}}).populate('user')
     res.status(200).send(rides)
   }catch(e){
     console.log(e);
@@ -83,13 +83,17 @@ router.get("/Share-Ride/ridesToPickup/:id", auth, async (req, res) => {
   }
 })
 
+//validate OTP
 router.post("/Share-Ride/validateOTP", auth,async (req, res) => {
   
     const ride_id = req.body.ride
+    console.log(ride_id)
     const ride = await Ride.findById(ride_id);
     const enteredOTP = req.body.enteredOTP
 
     if(ride.OTP != enteredOTP){
+      console.log(ride.OTP);
+      console.log(enteredOTP)
       res.status(406).send('Invalid OTP')
     }
     else{

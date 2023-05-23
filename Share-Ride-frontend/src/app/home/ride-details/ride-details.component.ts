@@ -4,6 +4,7 @@ import { RideService } from 'src/app/services/rides.service';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
+
 @Component({
   selector: 'app-ride-details',
   templateUrl: './ride-details.component.html',
@@ -16,6 +17,21 @@ export class RideDetailsComponent implements OnInit {
 
   constructor(public HomeService: HomeService, public RideService: RideService, private toastr: ToastrService){}
   ngOnInit(): void {
+      if(this.HomeService.Status === 'RequestedToEnd'){
+        console.log('requested to end');
+
+        let myModal = document.getElementById("exampleModal");
+        myModal?.classList.add("show");
+        (myModal as HTMLDivElement).style.display = "block";
+        document.body.classList.add("modal-open");
+      }
+  }
+
+  closeModal(){
+    let myModal = document.getElementById("exampleModal");
+        myModal?.classList.remove("show");
+        (myModal as HTMLDivElement).style.display = "none";
+        document.body.classList.remove("modal-open");
   }
 
   CanceltakenRide() {
@@ -50,5 +66,16 @@ export class RideDetailsComponent implements OnInit {
     }, error: (e) => {
       this.toastr.error(e.message)
     } })
+  }
+
+  RequestToEndRide(event:Event,rideID:string){
+    this.RideService.updateTakenRide(
+      { Status: 'RequestedToEnd' },
+      rideID
+    ).subscribe(() => {
+      const btn = event.target as HTMLInputElement;
+      btn.setAttribute('disabled', 'true');
+      btn.innerHTML = 'Requested To End';
+    });
   }
 }

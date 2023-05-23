@@ -12,7 +12,9 @@
 }
 
 
-
+.modal{
+    background-color: rgba(0, 0, 0, 0.336);
+}
 
 .card{
     max-height: 200px;

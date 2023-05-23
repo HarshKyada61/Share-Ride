@@ -15,7 +15,7 @@
 <div class="details card" *ngIf="HomeService.acceptedRides.length !== 0">
   <div
     class="card-body"
-    *ngFor="let ride of HomeService.acceptedRides"
+    *ngFor="let ride of HomeService.acceptedRides, let i=index"
     (click)="onclick(ride)"
   >
     <h6>Name:{{ ride.user.Name }}</h6>
@@ -25,7 +25,7 @@
       class="btn btn-warning mt-2"
       style="float: right"
       data-bs-toggle="modal"
-      data-bs-target="#OTPModal"
+      [attr.data-bs-target]="'#modal'+i"
       *ngIf="ride.Status === 'Booked'"
     >
       Enter OTP
@@ -33,12 +33,15 @@
     <button
     class="btn btn-warning mt-2"
     style="float: right"
-    *ngIf="ride.Status === 'Started'"
+    id="endRide"
+    *ngIf="ride.Status === 'Started' || ride.Status === 'RequestedToEnd'"
+    (click)="RequestToEndRide($event,ride._id)"
+    [disabled] = "ride.Status === 'RequestedToEnd'"
   >
-    End Ride
+    {{ ride.Status === 'RequestedToEnd' ? 'Requested To End' : 'End Ride' }}
   </button>
 
-    <div class="modal fade" tabindex="-1" id="OTPModal" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" [attr.id]="'modal'+i" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
@@ -94,3 +97,21 @@
   </div>
 </div>
 
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reached At Destination</h5>
+        
+      </div>
+      <div class="modal-body">
+        You have Reached At YOur Destination.Please pay RS.{{this.HomeService.cost?.toFixed(2)}}
+      </div>
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-primary">Pay</button>
+      </div>
+    </div>
+  </div>
+</div>

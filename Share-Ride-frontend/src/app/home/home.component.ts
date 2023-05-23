@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit {
           setTimeout(() => this.currentOfferedride(currentRide),1000)
           
         }
-        else if(currentRide.Status === 'Booked' || currentRide.Status === 'Started'){
+        else if(currentRide.Status === 'Booked' || currentRide.Status === 'Started' || currentRide.Status === 'RequestedToEnd'){
           console.log('booked')
           setTimeout(() => this.currentTakerideBooked(currentRide),1000)
         }
@@ -90,6 +90,8 @@ export class HomeComponent implements OnInit {
     this.HomeService.destLocation = currentRide.DropPoint;
     this.HomeService.srcLocation = currentRide.pickUpPoint;
     this.HomeService.route = currentRide.Route;
+    this.HomeService.Status = currentRide.Status
+    
 
     this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.DropPoint.cords, this.destMarker);
@@ -121,7 +123,8 @@ export class HomeComponent implements OnInit {
     this.HomeService.srcLocation = currentRide.pickUpPoint;
     this.HomeService.route = currentRide.Route;
     this.HomeService.searchingRide = true;
-    this.HomeService.OTP = currentRide.OTP
+    this.HomeService.OTP = currentRide.OTP;
+    this.HomeService.Status = currentRide.Status
    
 
     this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
@@ -146,6 +149,7 @@ export class HomeComponent implements OnInit {
     this.HomeService.destLocation = currentRide.EndPoint;
     this.HomeService.srcLocation = currentRide.StartPoint;
     this.HomeService.route = currentRide.Route;
+    this.HomeService.Status = currentRide.Status
 
     this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
       this.HomeService.requests = requests
@@ -174,6 +178,7 @@ export class HomeComponent implements OnInit {
     this.HomeService.destLocation = currentRide.EndPoint;
     this.HomeService.srcLocation = currentRide.StartPoint;
     this.HomeService.route = currentRide.Route;
+    this.HomeService.Status = currentRide.Status
 
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.EndPoint.cords, this.destMarker);
