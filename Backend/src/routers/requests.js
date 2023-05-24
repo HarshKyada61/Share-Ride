@@ -3,7 +3,12 @@ import auth from "../middleware/auth.js";
 import Requests from "../model/Requests.js";
 import OfferedRide from "../model/offeredRide.js";
 import Ride from "../model/Rides.js";
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
+// import twilio from "twilio";
+
+// const accountSid = process.env.TWILIO_ACCOUNT_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const client = twilio(accountSid, authToken);
 
 const router = new express.Router();
 
@@ -36,13 +41,14 @@ router.get("/Share-Ride/Show_Request/:id", auth, async (req, res) => {
       .populate("RequestedTo")
       .populate("OwnRide")
       .exec();
-    let filteredRequests = requests.filter((request) => request.OwnRide.Status === 'Searching')
+    let filteredRequests = requests.filter(
+      (request) => request.OwnRide.Status === "Searching"
+    );
     res.status(200).send(filteredRequests);
   } catch {
     res.status(400).send(e.message);
   }
 });
-
 
 //get all rides user has requested to
 router.get("/Share-Ride/getRequest/:id", auth, async (req, res) => {
@@ -50,12 +56,12 @@ router.get("/Share-Ride/getRequest/:id", auth, async (req, res) => {
     let requests = await Requests.find({
       OwnRide: req.params["id"],
       Status: "Requested",
-    })
-    let requestedTo = []
-    requests.forEach(request => {
-      requestedTo.push(request.RequestedRide)
-    })
-    res.status(200).send(requestedTo)
+    });
+    let requestedTo = [];
+    requests.forEach((request) => {
+      requestedTo.push(request.RequestedRide);
+    });
+    res.status(200).send(requestedTo);
   } catch {
     res.status(400).send(e.message);
   }
@@ -64,24 +70,24 @@ router.get("/Share-Ride/getRequest/:id", auth, async (req, res) => {
 //update Request
 router.patch("/Share-Ride/update_Request/:id", auth, async (req, res) => {
   try {
-    const request =  await Requests.findById(req.params['id'])
-      const updates = Object.keys(req.body)
-          updates.forEach((update) => request[update] = req.body[update]);
-          
+    const request = await Requests.findById(req.params["id"]);
+    const updates = Object.keys(req.body);
+    updates.forEach((update) => (request[update] = req.body[update]));
 
     if (req.body.Status === "Accepted") {
-      const ride = await Ride.findById(request.OwnRide).populate('user');
+      const ride = await Ride.findById(request.OwnRide).populate("user");
       if (ride.Status !== "Searching") {
         throw new Error("This Ride is not available");
       }
       ride.OfferedRide = request.RequestedRide;
       ride.Status = "Booked";
-      ride.OTP = Math.floor(Math.random() * 10000);
+      ride.OTP = Math.floor(Math.random() * 9000 + 1000);
       await ride.save();
 
-      sendMail(ride.user.Email, ride.OTP)
+      // sendMessage(ride.OTP)
+      sendMail(ride.user.Email, ride.OTP);
 
-      await request.save()
+      await request.save();
 
       const offeredride = await OfferedRide.findById(request.RequestedRide);
       offeredride.AvailableSeats = offeredride.AvailableSeats - 1;
@@ -97,41 +103,51 @@ router.patch("/Share-Ride/update_Request/:id", auth, async (req, res) => {
         });
       }
       await offeredride.save();
+      console.log(ride);
+      res.status(200).send(ride);
     } else {
       const request = await Requests.findById(req.params["id"]);
       const updates = Object.keys(req.body);
       updates.forEach((update) => (request[update] = req.body[update]));
       await request.save();
+      res.status(200).send();
     }
-    res.status(200).send();
   } catch (e) {
     console.log(e);
     res.status(400).send(e.message);
   }
 });
 
-
-const sendMail = async (email,OTP) => {
+const sendMail = async (email, OTP) => {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD
-      }
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
   });
 
-  let message= {
+  let message = {
     to: email,
-          subject: 'Your OTP for Next Ride',
-          html: `<p>Your OTP For Next Ride is ${OTP}</p>`
-  }
- 
+    subject: "Your OTP for Next Ride",
+    html: `<p>Your OTP For Next Ride is ${OTP}</p>`,
+  };
 
   const info = await transporter.sendMail(message).catch((e) => {
-      console.log(e);
-    });
+    console.log(e);
+  });
+};
 
-}
+//Send SMS
+// const sendMessage = (OTP) => {
+//   client.messages
+//     .create({
+//        body: `Your OTP For Next Ride is ${OTP}`,
+//        from: '+15075965338',
+//        to: '+919510937198'
+//      })
+//     .then(message => console.log(message.sid));
+// }
 
 export default router;

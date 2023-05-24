@@ -26,6 +26,8 @@ export class HomeService{
     | undefined;
   route: Number[][] | undefined;
 
+  available_Seats:number|undefined
+
   searchingRide = false
 
   ongoingRide = ''

@@ -2,6 +2,7 @@ import express from "express";
 import auth from "../middleware/auth.js";
 import OfferedRide from "../model/offeredRide.js";
 import Requests from "../model/Requests.js";
+import Ride from "../model/Rides.js";
 
 const router = new express.Router();
 
@@ -87,6 +88,14 @@ router.patch("/Share-Ride/updateOfferedRide/:id", auth, async (req, res) => {
         request.Status = "Declined";
         await request.save();
       });
+
+      const takenRides = await Ride.find({OfferedRide: req.params["id"], Status: 'Booked'})
+      takenRides.forEach(ride => {
+        ride.OfferedRide = undefined;
+        ride.Status = 'Searching';
+        ride.OTP = undefined;
+        ride.save()
+      })
     }
     res.status(200).send();
   } catch (e) {

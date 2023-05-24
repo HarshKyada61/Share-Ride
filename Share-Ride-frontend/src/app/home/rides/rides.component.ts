@@ -67,11 +67,17 @@ export class RidesComponent {
       { Status: 'Accepted' },
       request
     ).subscribe({
-      next: () => {
+      next: (acceptedRide) => {
+        // console.log(acceptedRide);
+        
         console.log('Request Accepted')
-        this.HomeService.acceptedRides.push(this.HomeService.requests[index].OwnRide)
+        this.HomeService.acceptedRides.push(acceptedRide)
         this.HomeService.requests.splice( index, 1)
-        console.log(this.HomeService.acceptedRides);
+        console.log(this.HomeService.ongoingRide);
+
+        if(this.HomeService.available_Seats){
+          this.HomeService.available_Seats -= 1; 
+        }
         
       },
       error: (e) => {
@@ -81,10 +87,13 @@ export class RidesComponent {
   }
 
   //decline Request
-  declineRequest(request: string) {
+  declineRequest(request: string, index:number) {
     this.RequestsService.updateRequest(
       { Status: 'Declined' },
       request
-    ).subscribe(() => console.log('Request Declined'));
+    ).subscribe(() => {
+      console.log('Request Declined')
+      this.HomeService.requests.splice( index, 1)
+    });
   }
 }

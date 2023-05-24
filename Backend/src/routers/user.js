@@ -96,7 +96,6 @@ router.patch('/Share-Ride/ResetPassword/:token', async (req,res) => {
     const { email } = decoded;
 
     let user = await User.findOne({Email:email})
-    // console.log(req.body.password);
     user.resetToken = undefined
     user['Password'] = req.body.password
     await user.save()
@@ -192,13 +191,6 @@ router.post('/Share-Ride/Logout', auth, async (req, res) => {
 //get User Details
 router.get('/Share-Ride/Profile',auth, async(req, res) => {
     const user = req.user;
-    // User.audit((err, log) => {
-    //     if (err) {
-    //       console.error('Error retrieving audit log:', err);
-    //     } else {
-    //       console.log('Audit log:', log);
-    //     }
-    //   });
     try{
         res.status(200).send(user)
     }

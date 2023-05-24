@@ -32,7 +32,10 @@ export class RouteDetailsComponent {
       Route: this.HomeService.route,
     }
     if(form.value.seats){
-      ride['AvailableSeats']=form.value.seats
+      ride['AvailableSeats']=form.value.seats;
+      this.HomeService.available_Seats = form.value.seats
+    }else{
+      this.HomeService.available_Seats = 1
     }
 
     this.RideService.offerRide(ride).subscribe({next:(res:any) => {
@@ -43,6 +46,7 @@ export class RouteDetailsComponent {
       this.HomeService.ongoingRide = res
       this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
         this.HomeService.requests = requests
+        
       })
     },
     error:e => console.log(e.message)

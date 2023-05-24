@@ -64,6 +64,13 @@ router.patch("/Share-Ride/updateTakenRide/:id", auth, async (req, res) => {
           request.Status = "Withdrawed";
           await request.save();
         });
+
+        if(ride.OfferedRide){
+          const offeredRide = await OfferedRide.findById(ride.OfferedRide)
+          offeredRide.AvailableSeats = offeredRide.AvailableSeats + 1
+          offeredRide.Status = 'waiting'
+          offeredRide.save()
+        }
       }
     res.status(200).send();
   } catch (e) {
@@ -87,17 +94,15 @@ router.get("/Share-Ride/ridesToPickup/:id", auth, async (req, res) => {
 router.post("/Share-Ride/validateOTP", auth,async (req, res) => {
   
     const ride_id = req.body.ride
-    console.log(ride_id)
     const ride = await Ride.findById(ride_id);
     const enteredOTP = req.body.enteredOTP
 
     if(ride.OTP != enteredOTP){
-      console.log(ride.OTP);
-      console.log(enteredOTP)
+      
       res.status(406).send('Invalid OTP')
     }
     else{
-      ride.OTP = null;
+      ride.OTP = undefined;
       ride.Status = 'Started'
       await ride.save();
       res.status(200).send()

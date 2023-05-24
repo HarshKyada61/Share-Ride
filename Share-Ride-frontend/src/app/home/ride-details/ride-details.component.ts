@@ -63,6 +63,8 @@ export class RideDetailsComponent implements OnInit {
     console.log(form.value.otp);
     this.RideService.validateOTP(ride_ID,form.value.otp).subscribe({next: () => {
       this.toastr.success('OTP Verified Successfully')
+      const obj = this.HomeService.acceptedRides.find((ride) => ride._id === ride_ID)
+      Object.assign(obj, {Status : 'Started'})
     }, error: (e) => {
       this.toastr.error(e.message)
     } })

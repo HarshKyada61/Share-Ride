@@ -33,7 +33,7 @@
 
 <div
   class="card details"
-  *ngIf="HomeService.requests "
+  *ngIf="HomeService.available_Seats && HomeService.available_Seats > 0"
 >
   <div *ngIf="HomeService.requests && HomeService.requests.length !== 0">
     <h4>Available Rides</h4>
@@ -51,7 +51,7 @@
         >
           Accept Request
         </button>
-        <button class="btn btn-warning" (click)="declineRequest(request._id)">
+        <button class="btn btn-warning" (click)="declineRequest(request._id, i)">
           Decline Request
         </button>
       </div>
