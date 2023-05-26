@@ -3,6 +3,7 @@ import { HomeService } from '../home.service';
 import { NgForm } from '@angular/forms';
 import { RideService } from 'src/app/services/rides.service';
 import { RequestsService } from 'src/app/services/requests.service';
+import { io } from "socket.io-client";
 
 @Component({
   selector: 'app-route-details',
@@ -17,6 +18,7 @@ export class RouteDetailsComponent {
 
   vehicles=this.HomeService.vehicles;
   seats = [1,2,3];
+  
   
 
   //create Ride
@@ -39,11 +41,16 @@ export class RouteDetailsComponent {
     }
 
     this.RideService.offerRide(ride).subscribe({next:(res:any) => {
+      
       console.log('ride added')
       this.HomeService.searchingRide=true
       this.removeListnerEvent.emit();
       this.hide.emit()
-      this.HomeService.ongoingRide = res
+      this.HomeService.ongoingRide = res;
+
+      this.HomeService.socket = io("http://localhost:3000");
+      this.HomeService.socket.emit('rideOffered',res)
+
       this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
         this.HomeService.requests = requests
         
@@ -67,6 +74,11 @@ export class RouteDetailsComponent {
     this.RideService.takeRide(ride).subscribe({next:(res:any) => {
       console.log('ride added')
       this.HomeService.ongoingRide = res
+      this.HomeService.socket = io("http://localhost:3000")
+      this.HomeService.socket.on('OfferedRide', (offeredRide:any) => {
+        console.log(offeredRide);
+        
+      })
       this.RideService.findRide(this.HomeService.route).subscribe({next:matchedRides => {
         console.log(matchedRides);
         this.HomeService.matchedRides= matchedRides
@@ -79,6 +91,5 @@ export class RouteDetailsComponent {
     error:e => console.log(e.message)
     })
   }
-
   
 }

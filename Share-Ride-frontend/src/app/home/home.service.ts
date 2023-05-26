@@ -45,4 +45,6 @@ export class HomeService{
   OTP: number | undefined
 
   Status:string |undefined
+
+  socket:any
 } 
