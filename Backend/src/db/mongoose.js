@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-await mongoose.connect("mongodb://127.0.0.1:5000/Share-Ride");
-
+await mongoose.connect("mongodb://127.0.0.1:27017/Share-Ride");
