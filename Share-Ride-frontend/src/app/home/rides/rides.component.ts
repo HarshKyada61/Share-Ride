@@ -28,6 +28,9 @@ export class RidesComponent {
       this.HomeService.ongoingRide
     ).subscribe();
     this.HomeService.requests = null;
+    if (this.HomeService.socket) {
+      this.HomeService.socket.disconnect();
+    }
     this.show.emit();
   }
 
@@ -39,6 +42,9 @@ export class RidesComponent {
       { Status: 'cancelled' },
       this.HomeService.ongoingRide
     ).subscribe();
+    if (this.HomeService.socket) {
+      this.HomeService.socket.disconnect();
+    }
     this.show.emit();
   }
 
@@ -53,7 +59,36 @@ export class RidesComponent {
       requestedRide
     ).subscribe({
       next: (res) => {
-        console.log(res);
+        this.HomeService.requestedRides
+          ? this.HomeService.requestedRides.push(requestedRide)
+          : (this.HomeService.requestedRides = [requestedRide]);
+        this.HomeService.socket.emit(
+          'rideRequested',
+          this.HomeService.ongoingRide,
+          requestedRide
+        );
+        this.HomeService.socket.on(
+          'requestAccepted',
+          (ride: any, otp: any, status: any) => {
+            this.HomeService.ridetoTake = ride;
+            const el = document.querySelector('app-route-details');
+            el?.classList.add('hide');
+            this.HomeService.OTP = otp;
+            this.HomeService.Status = status;
+            this.HomeService.matchedRides = null;
+          }
+        );
+        this.HomeService.socket.on('requestDeclined', async () => {
+          btn.setAttribute('disabled', 'false');
+          btn.innerHTML = 'Send Request';
+          const index = this.HomeService.requestedRides.indexOf(requestedRide);
+          this.HomeService.requestedRides.splice(index, 1);
+        });
+
+        this.HomeService.socket.on('otpVerifiedSuccess', (status: any) => {
+          this.HomeService.Status = status;
+          this.HomeService.OTP = undefined;
+        });
       },
       error: (e) => {
         this.tostrService.error(e.message);
@@ -62,23 +97,20 @@ export class RidesComponent {
   }
 
   //accept Request
-  acceptRequest(request: string,index:number) {
+  acceptRequest(request: string, index: number) {
     this.RequestsService.updateRequest(
       { Status: 'Accepted' },
       request
     ).subscribe({
       next: (acceptedRide) => {
-        // console.log(acceptedRide);
-        
-        console.log('Request Accepted')
-        this.HomeService.acceptedRides.push(acceptedRide)
-        this.HomeService.requests.splice( index, 1)
-        console.log(this.HomeService.ongoingRide);
+        this.HomeService.acceptedRides.push(acceptedRide);
+        this.HomeService.requests.splice(index, 1);
 
-        if(this.HomeService.available_Seats){
-          this.HomeService.available_Seats -= 1; 
+        if (this.HomeService.available_Seats) {
+          this.HomeService.available_Seats -= 1;
         }
-        
+
+        this.HomeService.socket.emit('acceptRide', request);
       },
       error: (e) => {
         this.tostrService.error(e.message);
@@ -87,13 +119,13 @@ export class RidesComponent {
   }
 
   //decline Request
-  declineRequest(request: string, index:number) {
+  declineRequest(request: string, index: number) {
     this.RequestsService.updateRequest(
       { Status: 'Declined' },
       request
     ).subscribe(() => {
-      console.log('Request Declined')
-      this.HomeService.requests.splice( index, 1)
+      this.HomeService.requests.splice(index, 1);
+      this.HomeService.socket.emit('declineRide', request);
     });
   }
 }

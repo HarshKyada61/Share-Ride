@@ -82,20 +82,26 @@ router.patch("/Share-Ride/updateOfferedRide/:id", auth, async (req, res) => {
     updates.forEach((update) => (ride[update] = req.body[update]));
     await ride.save();
 
-    if(req.body.Status === 'cancelled'){
-      const requests = await Requests.find({RequestedRide:req.params["id"],Status:'Requested'}) 
+    if (req.body.Status === "cancelled") {
+      const requests = await Requests.find({
+        RequestedRide: req.params["id"],
+        Status: "Requested",
+      });
       requests.forEach(async (request) => {
         request.Status = "Declined";
         await request.save();
       });
 
-      const takenRides = await Ride.find({OfferedRide: req.params["id"], Status: 'Booked'})
-      takenRides.forEach(ride => {
+      const takenRides = await Ride.find({
+        OfferedRide: req.params["id"],
+        Status: "Booked",
+      });
+      takenRides.forEach((ride) => {
         ride.OfferedRide = undefined;
-        ride.Status = 'Searching';
+        ride.Status = "Searching";
         ride.OTP = undefined;
-        ride.save()
-      })
+        ride.save();
+      });
     }
     res.status(200).send();
   } catch (e) {
@@ -104,17 +110,17 @@ router.patch("/Share-Ride/updateOfferedRide/:id", auth, async (req, res) => {
   }
 });
 
-router.get('/Share-Ride/findRideByID/:id', auth, async (req, res) => {
-  try{
+router.get("/Share-Ride/findRideByID/:id", auth, async (req, res) => {
+  try {
     const ride = await OfferedRide.findById(req.params["id"])
-    .populate("vehicle")
-    .populate("user")
-    .exec();
-    res.status(200).send(ride)
-  }catch(e){
+      .populate("vehicle")
+      .populate("user")
+      .exec();
+    res.status(200).send(ride);
+  } catch (e) {
     console.log(e);
     res.status(400).send(e.message);
   }
-})
+});
 
 export default router;

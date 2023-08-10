@@ -66,18 +66,18 @@ export class UserService {
   }
 
   //send reset mail
-  sendResetMail(email:string){
-    return this.http.post(this.URL+'/PasswordMail',{email})
+  sendResetMail(email: string) {
+    return this.http.post(this.URL + '/PasswordMail', { email });
   }
 
   //Reset Password
-  resetPassword(password:string,token:string){
-    return this.http.patch(this.URL+'/ResetPassword/'+token,{password})
+  resetPassword(password: string, token: string) {
+    return this.http.patch(this.URL + '/ResetPassword/' + token, { password });
   }
 
   //Chech Reset Password Link
-  CheckLink(token:string){
-    return this.http.get(this.URL+'/checkReset/'+token)
+  CheckLink(token: string) {
+    return this.http.get(this.URL + '/checkReset/' + token);
   }
 
   setToken(token: any) {
@@ -90,10 +90,7 @@ export class UserService {
     this.tokenSubscription = of(null)
       .pipe(delay(timeout * 1000))
       .subscribe((res) => {
-        console.log('token expired');
         this.logout().subscribe(() => this.router.navigate(['/auth']));
       });
   }
-
-  
 }

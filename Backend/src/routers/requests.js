@@ -103,7 +103,6 @@ router.patch("/Share-Ride/update_Request/:id", auth, async (req, res) => {
         });
       }
       await offeredride.save();
-      console.log(ride);
       res.status(200).send(ride);
     } else {
       const request = await Requests.findById(req.params["id"]);

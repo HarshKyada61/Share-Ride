@@ -1,17 +1,16 @@
-import { Injectable } from "@angular/core";
-import { LngLatLike } from "mapbox-gl";
+import { Injectable } from '@angular/core';
+import { LngLatLike } from 'mapbox-gl';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
+export class HomeService {
+  Distance: number | undefined;
+  Duration: string | undefined;
+  cost: number | undefined;
+  vehicles: { VehicleNo: string; _id: string; Type: string }[] = [];
 
-export class HomeService{
-    Distance: number | undefined;
-    Duration: string | undefined;
-    cost: number | undefined;
-    vehicles:{VehicleNo:string, _id:string, Type:string}[] = []
-
-    srcLocation:
+  srcLocation:
     | {
         cords: LngLatLike;
         place_name: string;
@@ -26,25 +25,25 @@ export class HomeService{
     | undefined;
   route: Number[][] | undefined;
 
-  available_Seats:number|undefined
+  available_Seats: number | undefined;
 
-  searchingRide = false
+  searchingRide = false;
 
-  ongoingRide = ''
+  ongoingRide = '';
 
-  matchedRides:any
-  
-  requests: any
+  matchedRides: any;
 
-  requestedRides:any
+  requests: any;
 
-  ridetoTake:any
+  requestedRides: any;
 
-  acceptedRides:any[]=[]
+  ridetoTake: any;
 
-  OTP: number | undefined
+  acceptedRides: any[] = [];
 
-  Status:string |undefined
+  OTP: number | undefined;
 
-  socket:any
-} 
+  Status: string | undefined;
+
+  socket: any;
+}

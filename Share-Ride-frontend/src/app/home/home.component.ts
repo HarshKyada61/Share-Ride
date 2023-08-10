@@ -37,20 +37,22 @@ export class HomeComponent implements OnInit {
   curMarker = new mapboxgl.Marker({ element: this.el });
   sourceMarker = new mapboxgl.Marker({ color: 'red' });
   destMarker = new mapboxgl.Marker({ color: 'black' });
-  PickUpMarker = new mapboxgl.Marker({ element: this.el1, anchor:'bottom'});
-  DropMarker = new mapboxgl.Marker({ element:this.el2, anchor:'bottom' });
+  PickUpMarker = new mapboxgl.Marker({ element: this.el1, anchor: 'bottom' });
+  DropMarker = new mapboxgl.Marker({ element: this.el2, anchor: 'bottom' });
 
   ngOnInit() {
-    this.map =new mapboxgl.Map({
+    this.map = new mapboxgl.Map({
       container: 'map', // container ID
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
       zoom: 14, // starting zoom
       projection: { name: 'mercator' },
     });
     this.el.innerHTML =
-      '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:#09baf0;"></i>';
-      this.el1.innerHTML = '<i class="fa-solid fa-map-pin fa-2x" style="color:green;"></i>' 
-    this.el2.innerHTML = '<i class="fa-solid fa-map-pin fa-2x" style="color:black;"></i>' 
+      '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:black;"></i>';
+    this.el1.innerHTML =
+      '<i class="fa-solid fa-map-pin fa-2x" style="color:green;"></i>';
+    this.el2.innerHTML =
+      '<i class="fa-solid fa-map-pin fa-2x" style="color:black;"></i>';
     this.getCurrentLocation();
 
     this.Vehicleservice.getVehicles().subscribe((vehicles: any) => {
@@ -59,23 +61,18 @@ export class HomeComponent implements OnInit {
 
     this.RideService.getCurrentRide().subscribe((currentRide: any) => {
       if (currentRide) {
-        if (currentRide.Status === 'Searching' ) {
-          console.log('searching');
-          setTimeout(() => this.currentTakeride(currentRide), 1000)
-          
-        }
-        else if(currentRide.Status === 'waiting'){
-          console.log('waiting');
-          setTimeout(() => this.currentOfferedride(currentRide),1000)
-          
-        }
-        else if(currentRide.Status === 'Booked' || currentRide.Status === 'Started' || currentRide.Status === 'RequestedToEnd'){
-          console.log('booked')
-          setTimeout(() => this.currentTakerideBooked(currentRide),1000)
-        }
-        else if(currentRide.Status === 'Full'){
-          console.log('full')
-          setTimeout(() => this.currentOfferedrideFull(currentRide),1000)
+        if (currentRide.Status === 'Searching') {
+          setTimeout(() => this.currentTakeride(currentRide), 1000);
+        } else if (currentRide.Status === 'waiting') {
+          setTimeout(() => this.currentOfferedride(currentRide), 1000);
+        } else if (
+          currentRide.Status === 'Booked' ||
+          currentRide.Status === 'Started' ||
+          currentRide.Status === 'RequestedToEnd'
+        ) {
+          setTimeout(() => this.currentTakerideBooked(currentRide), 1000);
+        } else if (currentRide.Status === 'Full') {
+          setTimeout(() => this.currentOfferedrideFull(currentRide), 1000);
         }
       }
     });
@@ -83,30 +80,32 @@ export class HomeComponent implements OnInit {
 
   //add ongoing takeRide
   async currentTakeride(currentRide: any) {
-    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.ongoingRide = currentRide._id;
     this.HomeService.Distance = currentRide.distance;
     this.HomeService.Duration = currentRide.duration;
     this.HomeService.cost = currentRide.TotalFare;
     this.HomeService.destLocation = currentRide.DropPoint;
     this.HomeService.srcLocation = currentRide.pickUpPoint;
     this.HomeService.route = currentRide.Route;
-    this.HomeService.Status = currentRide.Status
-    
+    this.HomeService.Status = currentRide.Status;
 
     this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.DropPoint.cords, this.destMarker);
-    this.findRoute()
-    
+    this.findRoute();
 
     this.RideService.findRide(this.HomeService.route).subscribe({
       next: (matchedRides) => {
-        this.RequestService.sentRequests(this.HomeService.ongoingRide).subscribe({next:(res) => {
-          this.HomeService.requestedRides= res
-          
-        },error: (e) => console.log(e.message)})
+        this.RequestService.sentRequests(
+          this.HomeService.ongoingRide
+        ).subscribe({
+          next: (res) => {
+            this.HomeService.requestedRides = res;
+          },
+          error: (e) => console.log(e.message),
+        });
         this.HomeService.matchedRides = matchedRides;
         this.HomeService.searchingRide = true;
-         this.removeListner();
+        this.removeListner();
         this.addHideClass();
       },
       error: (e) => console.log(e),
@@ -115,7 +114,7 @@ export class HomeComponent implements OnInit {
 
   //add ongoing takeRide after booked
   async currentTakerideBooked(currentRide: any) {
-    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.ongoingRide = currentRide._id;
     this.HomeService.Distance = currentRide.distance;
     this.HomeService.Duration = currentRide.duration;
     this.HomeService.cost = currentRide.TotalFare;
@@ -124,72 +123,73 @@ export class HomeComponent implements OnInit {
     this.HomeService.route = currentRide.Route;
     this.HomeService.searchingRide = true;
     this.HomeService.OTP = currentRide.OTP;
-    this.HomeService.Status = currentRide.Status
-   
+    this.HomeService.Status = currentRide.Status;
 
     this.putMarker(currentRide.pickUpPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.DropPoint.cords, this.destMarker);
-    this.findRoute()
-    
-    this.removeListner();
-    
+    this.findRoute();
 
-      this.RideService.rideTotake(currentRide.OfferedRide).subscribe(ride => {
-        this.HomeService.ridetoTake = ride;
-        this.addHideClass();
-      })
-    
+    this.removeListner();
+
+    this.RideService.rideTotake(currentRide.OfferedRide).subscribe((ride) => {
+      this.HomeService.ridetoTake = ride;
+      this.addHideClass();
+    });
   }
 
   //add ongoing offeredRide
   async currentOfferedride(currentRide: any) {
-    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.ongoingRide = currentRide._id;
     this.HomeService.Distance = currentRide.distance;
     this.HomeService.Duration = currentRide.duration;
     this.HomeService.destLocation = currentRide.EndPoint;
     this.HomeService.srcLocation = currentRide.StartPoint;
     this.HomeService.route = currentRide.Route;
-    this.HomeService.Status = currentRide.Status
-    this.HomeService.available_Seats = currentRide.AvailableSeats
+    this.HomeService.Status = currentRide.Status;
+    this.HomeService.available_Seats = currentRide.AvailableSeats;
 
-    this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(requests => {
-      this.HomeService.requests = requests
-    })
+    this.RequestService.getRequests(this.HomeService.ongoingRide).subscribe(
+      (requests) => {
+        this.HomeService.requests = requests;
+      }
+    );
 
-    this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe(rides => {
-      this.HomeService.acceptedRides = rides as []
-      console.log(this.HomeService.acceptedRides);
-      
-    })
+    this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe(
+      (rides) => {
+        this.HomeService.acceptedRides = rides as [];
+      }
+    );
 
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.EndPoint.cords, this.destMarker);
-    this.findRoute()
+    this.findRoute();
 
-    this.HomeService.searchingRide=true
+    this.HomeService.searchingRide = true;
     this.removeListner();
     setTimeout(() => this.addHideClass(), 500);
   }
 
-  ////add ongoing offeredRide after full
+  //add ongoing offeredRide after full
   async currentOfferedrideFull(currentRide: any) {
-    this.HomeService.ongoingRide= currentRide._id;
+    this.HomeService.ongoingRide = currentRide._id;
     this.HomeService.Distance = currentRide.distance;
     this.HomeService.Duration = currentRide.duration;
     this.HomeService.destLocation = currentRide.EndPoint;
     this.HomeService.srcLocation = currentRide.StartPoint;
     this.HomeService.route = currentRide.Route;
-    this.HomeService.Status = currentRide.Status
+    this.HomeService.Status = currentRide.Status;
 
     this.putMarker(currentRide.StartPoint.cords, this.sourceMarker);
     this.putMarker(currentRide.EndPoint.cords, this.destMarker);
-    this.findRoute()
+    this.findRoute();
 
-    this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe((rides:any) => {
-      this.HomeService.acceptedRides = rides 
-    })
+    this.RideService.ridesToPickup(this.HomeService.ongoingRide).subscribe(
+      (rides: any) => {
+        this.HomeService.acceptedRides = rides;
+      }
+    );
 
-    this.HomeService.searchingRide=true
+    this.HomeService.searchingRide = true;
     this.removeListner();
     setTimeout(() => this.addHideClass(), 500);
   }
@@ -300,11 +300,10 @@ export class HomeComponent implements OnInit {
 
   //findRoute
   findRoute() {
-    
     const srccords: any = this.HomeService.srcLocation?.cords;
     const destcords: any = this.HomeService.destLocation?.cords;
 
-     this.MapService.searchRoute(
+    this.MapService.searchRoute(
       srccords[0],
       srccords[1],
       destcords[0],
@@ -377,9 +376,8 @@ export class HomeComponent implements OnInit {
 
   //add hideclass
   addHideClass() {
-    const el = document.querySelector('app-route-details')    
+    const el = document.querySelector('app-route-details');
     el?.classList.add('hide');
-    
   }
 
   //removeHideClass
@@ -388,9 +386,8 @@ export class HomeComponent implements OnInit {
   }
 
   //showPickup and drop of rider
-  ShowPickupDrop(ride:any){
-    
-    this.putMarker(ride.pickUp.cords, this.PickUpMarker)
-    this.putMarker(ride.drop.cords, this.DropMarker)
+  ShowPickupDrop(ride: any) {
+    this.putMarker(ride.pickUp.cords, this.PickUpMarker);
+    this.putMarker(ride.drop.cords, this.DropMarker);
   }
 }
